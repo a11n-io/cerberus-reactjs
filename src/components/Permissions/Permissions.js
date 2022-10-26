@@ -153,131 +153,129 @@ export default function Permissions(props) {
   }
 
   return (
-    <>
-      <table>
-        <thead>
-          <tr>
-            <th>Permittee</th>
-            <th>Policies</th>
-            <th />
-          </tr>
-        </thead>
-        <tbody>
-          {permissions.map((permission) => {
-            return (
-              <tr key={permission.id}>
-                <td>{permission.permittee.displayName}</td>
-                <td>
-                  {permission.policies.map((policy) => {
-                    return (
-                      <span key={policy.id}>
-                        {policy.name}
+    <table>
+      <thead>
+        <tr>
+          <th>Permittee</th>
+          <th>Policies</th>
+          <th />
+        </tr>
+      </thead>
+      <tbody>
+        {permissions.map((permission) => {
+          return (
+            <tr key={permission.id}>
+              <td>{permission.permittee.displayName}</td>
+              <td>
+                {permission.policies.map((policy) => {
+                  return (
+                    <span key={policy.id}>
+                      {policy.name}
 
-                        {/* eslint-disable-next-line react/jsx-no-bind */}
-                        <Button
-                          outline
-                          accent
-                          data-val1={permission.id}
-                          data-val2={policy.id}
-                          onClick={handlePolicyRemoveClicked}
-                        >
-                          x
-                        </Button>
-                      </span>
-                    )
-                  })}
-                  <span>
-                    <select
-                      onChange={handlePolicySelected}
-                      data-val1={permission.id}
-                    >
-                      <option value=''>Select Policy</option>
-                      {policies.map((policy) => {
-                        return (
-                          <option key={policy.id} value={policy.id}>
-                            {policy.name}
-                          </option>
-                        )
-                      })}
-                    </select>
-                  </span>
-                </td>
-                <td>
-                  <Button
-                    onClick={handlePermissionRemoveClicked}
+                      {/* eslint-disable-next-line react/jsx-no-bind */}
+                      <Button
+                        outline
+                        accent
+                        data-val1={permission.id}
+                        data-val2={policy.id}
+                        onClick={handlePolicyRemoveClicked}
+                      >
+                        x
+                      </Button>
+                    </span>
+                  )
+                })}
+                <span>
+                  <select
+                    onChange={handlePolicySelected}
                     data-val1={permission.id}
                   >
-                    Remove
+                    <option value=''>Select Policy</option>
+                    {policies.map((policy) => {
+                      return (
+                        <option key={policy.id} value={policy.id}>
+                          {policy.name}
+                        </option>
+                      )
+                    })}
+                  </select>
+                </span>
+              </td>
+              <td>
+                <Button
+                  onClick={handlePermissionRemoveClicked}
+                  data-val1={permission.id}
+                >
+                  Remove
+                </Button>
+              </td>
+            </tr>
+          )
+        })}
+        <tr>
+          <td>
+            <label htmlFor='permittees'>Permittee:</label>
+            <select id='permittees' onChange={handleNewPermitteeSelected}>
+              <option value=''>Select Role or User</option>
+              <optgroup label='Roles'>
+                {roles.map((role) => {
+                  return (
+                    <option key={role.id} value={role.id}>
+                      {role.displayName}
+                    </option>
+                  )
+                })}
+              </optgroup>
+              <optgroup label='Users'>
+                {users.map((user) => {
+                  return (
+                    <option key={user.id} value={user.id}>
+                      {user.displayName}
+                    </option>
+                  )
+                })}
+              </optgroup>
+            </select>
+          </td>
+          <td>
+            {newPolicies.map((policy) => {
+              return (
+                <span key={policy.id}>
+                  {policy.name}
+                  <Button
+                    outline
+                    accent
+                    data-val1={policy.id}
+                    onClick={handleNewPolicyRemoveClicked}
+                  >
+                    x
                   </Button>
-                </td>
-              </tr>
-            )
-          })}
-          <tr>
-            <td>
-              <label htmlFor='permittees'>Permittee:</label>
-              <select id='permittees' onChange={handleNewPermitteeSelected}>
-                <option value=''>Select Role or User</option>
-                <optgroup label='Roles'>
-                  {roles.map((role) => {
-                    return (
-                      <option key={role.id} value={role.id}>
-                        {role.displayName}
-                      </option>
-                    )
-                  })}
-                </optgroup>
-                <optgroup label='Users'>
-                  {users.map((user) => {
-                    return (
-                      <option key={user.id} value={user.id}>
-                        {user.displayName}
-                      </option>
-                    )
-                  })}
-                </optgroup>
+                </span>
+              )
+            })}
+            <span>
+              <select onChange={handleNewPolicySelected}>
+                <option value=''>Select Policy</option>
+                {policies.map((policy) => {
+                  return (
+                    <option key={policy.id} value={policy.id}>
+                      {policy.name}
+                    </option>
+                  )
+                })}
               </select>
-            </td>
-            <td>
-              {newPolicies.map((policy) => {
-                return (
-                  <span key={policy.id}>
-                    {policy.name}
-                    <Button
-                      outline
-                      accent
-                      data-val1={policy.id}
-                      onClick={handleNewPolicyRemoveClicked}
-                    >
-                      x
-                    </Button>
-                  </span>
-                )
-              })}
-              <span>
-                <select onChange={handleNewPolicySelected}>
-                  <option value=''>Select Policy</option>
-                  {policies.map((policy) => {
-                    return (
-                      <option key={policy.id} value={policy.id}>
-                        {policy.name}
-                      </option>
-                    )
-                  })}
-                </select>
-              </span>
-            </td>
-            <td>
-              <Button
-                disabled={!newPermittee || newPolicies.length === 0}
-                onClick={handlePermissionAddClicked}
-              >
-                Add
-              </Button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </>
+            </span>
+          </td>
+          <td>
+            <Button
+              disabled={!newPermittee || newPolicies.length === 0}
+              onClick={handlePermissionAddClicked}
+            >
+              Add
+            </Button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   )
 }

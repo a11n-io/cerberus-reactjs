@@ -15,10 +15,8 @@ export default function Button(props) {
   )
 
   return (
-    <>
-      <button className={classNames} {...rest}>
-        {children}
-      </button>
-    </>
+    <button className={classNames} {...rest}>
+      {children}
+    </button>
   )
 }
