@@ -1,10 +1,10 @@
 import React from 'react'
 
-import { ExampleComponent } from 'cerberus-reactjs'
 import 'cerberus-reactjs/dist/index.css'
+import {Permissions} from 'cerberus-reactjs';
 
 const App = () => {
-  return <ExampleComponent text="Create React Library Example 😄" />
+  return <Permissions cerberusUrl="/" cerberusToken="" accountId="accid" resourceId="resid"/>
 }
 
 export default App

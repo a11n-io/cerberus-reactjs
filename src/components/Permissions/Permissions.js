@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
+import './Permissions.css'
 import useFetch from '../../hooks/useFetch'
 import Loader from '../../uikit/Loader'
-import Button from '../../uikit/Button'
+import { Button, Form, Table, Toast } from 'react-bootstrap'
 
 export default function Permissions(props) {
   const { cerberusUrl, cerberusToken, accountId, resourceId } = props
@@ -50,6 +51,8 @@ export default function Permissions(props) {
   function handlePolicyRemoveClicked(e) {
     const permissionId = e.target.getAttribute('data-val1')
     const policyId = e.target.getAttribute('data-val2')
+
+    console.log('handlePolicyRemoveClicked', permissionId, policyId)
 
     if (!permissionId || !policyId) {
       return
@@ -140,6 +143,7 @@ export default function Permissions(props) {
   }
 
   function handleNewPolicyRemoveClicked(e) {
+    console.log('handleNewPolicyRemoveClicked')
     const policyId = e.target.getAttribute('data-val1')
     if (!policyId) {
       return
@@ -153,11 +157,11 @@ export default function Permissions(props) {
   }
 
   return (
-    <table>
+    <Table striped className='cerberus-permissions'>
       <thead>
         <tr>
-          <th>Permittee</th>
-          <th>Policies</th>
+          <th>Who</th>
+          <th>How</th>
           <th />
         </tr>
       </thead>
@@ -169,24 +173,28 @@ export default function Permissions(props) {
               <td>
                 {permission.policies.map((policy) => {
                   return (
-                    <span key={policy.id}>
-                      {policy.name}
-
-                      {/* eslint-disable-next-line react/jsx-no-bind */}
-                      <Button
-                        outline
-                        accent
-                        data-val1={permission.id}
-                        data-val2={policy.id}
-                        onClick={handlePolicyRemoveClicked}
-                      >
-                        x
-                      </Button>
-                    </span>
+                    <Toast
+                      className='d-inline-block m-1'
+                      key={policy.id}
+                    >
+                      <Toast.Header closeButton={false}>
+                        <strong className='me-auto'>{policy.name}</strong>
+                        <Button
+                          data-val1={permission.id}
+                          data-val2={policy.id}
+                          onClick={handlePolicyRemoveClicked}
+                          variant='outline-danger'
+                          size='sm'
+                        >
+                          x
+                        </Button>
+                      </Toast.Header>
+                      <Toast.Body>Allows administrative actions</Toast.Body>
+                    </Toast>
                   )
                 })}
                 <span>
-                  <select
+                  <Form.Select
                     onChange={handlePolicySelected}
                     data-val1={permission.id}
                   >
@@ -198,11 +206,12 @@ export default function Permissions(props) {
                         </option>
                       )
                     })}
-                  </select>
+                  </Form.Select>
                 </span>
               </td>
               <td>
                 <Button
+                  variant='danger'
                   onClick={handlePermissionRemoveClicked}
                   data-val1={permission.id}
                 >
@@ -214,8 +223,7 @@ export default function Permissions(props) {
         })}
         <tr>
           <td>
-            <label htmlFor='permittees'>Permittee:</label>
-            <select id='permittees' onChange={handleNewPermitteeSelected}>
+            <Form.Select onChange={handleNewPermitteeSelected}>
               <option value=''>Select Role or User</option>
               <optgroup label='Roles'>
                 {roles.map((role) => {
@@ -235,26 +243,32 @@ export default function Permissions(props) {
                   )
                 })}
               </optgroup>
-            </select>
+            </Form.Select>
           </td>
           <td>
             {newPolicies.map((policy) => {
               return (
-                <span key={policy.id}>
-                  {policy.name}
-                  <Button
-                    outline
-                    accent
-                    data-val1={policy.id}
-                    onClick={handleNewPolicyRemoveClicked}
-                  >
-                    x
-                  </Button>
-                </span>
+                <Toast
+                  className='d-inline-block m-1'
+                  key={policy.id}
+                >
+                  <Toast.Header closeButton={false}>
+                    <strong className='me-auto'>{policy.name}</strong>
+                    <Button
+                      data-val1={policy.id}
+                      onClick={handleNewPolicyRemoveClicked}
+                      variant='outline-danger'
+                      size='sm'
+                    >
+                      x
+                    </Button>
+                  </Toast.Header>
+                  <Toast.Body>Allows administrative actions</Toast.Body>
+                </Toast>
               )
             })}
             <span>
-              <select onChange={handleNewPolicySelected}>
+              <Form.Select onChange={handleNewPolicySelected}>
                 <option value=''>Select Policy</option>
                 {policies.map((policy) => {
                   return (
@@ -263,11 +277,12 @@ export default function Permissions(props) {
                     </option>
                   )
                 })}
-              </select>
+              </Form.Select>
             </span>
           </td>
           <td>
             <Button
+              variant='primary'
               disabled={!newPermittee || newPolicies.length === 0}
               onClick={handlePermissionAddClicked}
             >
@@ -276,6 +291,6 @@ export default function Permissions(props) {
           </td>
         </tr>
       </tbody>
-    </table>
+    </Table>
   )
 }

@@ -1,0 +1,15 @@
+{"code":200,"data":[
+{
+"id": "policy1",
+"name": "Policy 1"
+},
+{
+"id": "policy2",
+"name": "Policy 2"
+},
+{
+"id": "policy3",
+"name": "Policy 3"
+}
+]
+}

@@ -1,0 +1,46 @@
+{"code":200,"data":[
+  {
+    "id": "perm1",
+    "resourceId": "res1",
+    "permittee": {
+      "id":"user1",
+      "displayName":"User 1"
+    },
+    "resourceType":{
+      "id": "rt1",
+      "name": "Resourcetype 1"
+    },
+    "policies":[
+      {
+        "id":"policy1",
+        "name":"Policy 1"
+      }
+    ]
+  },
+  {
+      "id": "perm2",
+      "resourceId": "res1",
+      "permittee": {
+        "id":"role11",
+        "displayName":"Role 1"
+      },
+      "resourceType":{
+        "id": "rt1",
+        "name": "Resourcetype 1"
+      },
+      "policies":[
+        {
+          "id":"policy1",
+          "name":"Policy 1"
+        },
+        {
+          "id":"policy2",
+          "name":"Policy 2"
+        },
+        {
+          "id":"policy3",
+          "name":"Policy 3"
+        }
+      ]
+    }
+]}
