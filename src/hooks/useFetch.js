@@ -8,7 +8,7 @@ const useFetch = (baseUrl, token) => {
   }
   let hdrs = defaultHeaders
   if (token) {
-    hdrs = { ...hdrs, CerberusAuthorization: 'Bearer ' + token }
+    hdrs = { ...hdrs, Authorization: 'Bearer ' + token }
   }
 
   function get(url, headers) {

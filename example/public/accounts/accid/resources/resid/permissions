@@ -13,7 +13,8 @@
     "policies":[
       {
         "id":"policy1",
-        "name":"Policy 1"
+        "name":"Policy 1",
+        "description": "Policy 1 description"
       }
     ]
   },
@@ -29,17 +30,20 @@
         "name": "Resourcetype 1"
       },
       "policies":[
-        {
+        {s
           "id":"policy1",
-          "name":"Policy 1"
+          "name":"Policy 1",
+          "description": "Policy 1 description"
         },
         {
           "id":"policy2",
-          "name":"Policy 2"
+          "name":"Policy 2",
+          "description": "Policy 2 description"
         },
         {
           "id":"policy3",
-          "name":"Policy 3"
+          "name":"Policy 3",
+          "description": "Policy 3 description"
         }
       ]
     }

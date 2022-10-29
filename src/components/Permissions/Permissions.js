@@ -189,7 +189,7 @@ export default function Permissions(props) {
                           x
                         </Button>
                       </Toast.Header>
-                      <Toast.Body>Allows administrative actions</Toast.Body>
+                      <Toast.Body>{policy.description}</Toast.Body>
                     </Toast>
                   )
                 })}
