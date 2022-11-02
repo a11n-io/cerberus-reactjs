@@ -175,7 +175,7 @@ export default function Permissions(props) {
                   return (
                     <Toast
                       className='d-inline-block m-1'
-                      key={policy.id}
+                      key={`active-${policy.id}`}
                     >
                       <Toast.Header closeButton={false}>
                         <strong className='me-auto'>{policy.name}</strong>
@@ -202,7 +202,7 @@ export default function Permissions(props) {
                     {policies.map((policy) => {
                       return (
                         <option
-                          key={`${permission.id}${policy.id}`}
+                          key={`active-${permission.id}${policy.id}`}
                           value={policy.id}
                         >
                           {policy.name}
@@ -253,7 +253,7 @@ export default function Permissions(props) {
               return (
                 <Toast
                   className='d-inline-block m-1'
-                  key={policy.id}
+                  key={`newactive-${policy.id}`}
                 >
                   <Toast.Header closeButton={false}>
                     <strong className='me-auto'>{policy.name}</strong>
@@ -275,7 +275,7 @@ export default function Permissions(props) {
                 <option value=''>Select Policy</option>
                 {policies.map((policy) => {
                   return (
-                    <option key={policy.id} value={policy.id}>
+                    <option key={`new-${policy.id}`} value={policy.id}>
                       {policy.name}
                     </option>
                   )
