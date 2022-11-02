@@ -201,7 +201,10 @@ export default function Permissions(props) {
                     <option value=''>Select Policy</option>
                     {policies.map((policy) => {
                       return (
-                        <option key={policy.id} value={policy.id}>
+                        <option
+                          key={`${permission.id}${policy.id}`}
+                          value={policy.id}
+                        >
                           {policy.name}
                         </option>
                       )
