@@ -17,6 +17,7 @@
         "description": "Policy 1 description"
       }
     ],
+    "hasParent":true,
     "inherited":true
   },
   {
@@ -47,6 +48,7 @@
           "description": "Policy 3 description"
         }
       ],
+      "hasParent":true,
       "inherited":false
     }
 ]}

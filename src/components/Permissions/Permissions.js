@@ -2,7 +2,15 @@ import React, { useEffect, useState } from 'react'
 import './Permissions.css'
 import useFetch from '../../hooks/useFetch'
 import Loader from '../../uikit/Loader'
-import { Button, Form, Table, Toast } from 'react-bootstrap'
+import {
+  Button,
+  Container,
+  Row,
+  Col,
+  Form,
+  Table,
+  Toast
+} from 'react-bootstrap'
 
 export default function Permissions(props) {
   const { cerberusUrl, cerberusToken, accountId, resourceId } = props
@@ -14,6 +22,7 @@ export default function Permissions(props) {
   const [newPermittee, setNewPermittee] = useState()
   const [newPolicies, setNewPolicies] = useState([])
   const [activeInherit, setActiveInherit] = useState(false)
+  const [hasParent, setHasParent] = useState(false)
 
   useEffect(() => {
     getPermissions()
@@ -50,6 +59,7 @@ export default function Permissions(props) {
           setPermissions(r)
           if (r.length > 0) {
             setActiveInherit(r[0].activeInherit)
+            setHasParent(r[0].hasParent)
           }
         }
       })
@@ -181,10 +191,12 @@ export default function Permissions(props) {
           <th>Who</th>
           <th>How</th>
           <th>
-            <PrivateSwitch
-              activeInherit={activeInherit}
-              onInheritToggled={handleInheritToggled}
-            />
+            {hasParent && (
+              <PrivateSwitch
+                activeInherit={activeInherit}
+                onInheritToggled={handleInheritToggled}
+              />
+            )}
           </th>
         </tr>
       </thead>
@@ -192,26 +204,23 @@ export default function Permissions(props) {
         {permissions.map((permission) => {
           return (
             <tr key={permission.id}>
-              <td>{permission.permittee.displayName} {permission.inherited && <p>inherited</p>}</td>
+              <td>
+                {permission.permittee.displayName}
+                {permission.inherited && (
+                  <p>
+                    <small>(shared)</small>
+                  </p>
+                )}
+              </td>
               <td>
                 {permission.policies.map((policy) => {
                   return (
-                    <Toast className='d-inline-block m-1' key={policy.id}>
-                      <Toast.Header closeButton={false}>
-                        <strong className='me-auto'>{policy.name}</strong>
-                        <Button
-                          disabled={permission.inherited}
-                          data-val1={permission.id}
-                          data-val2={policy.id}
-                          onClick={handlePolicyRemoveClicked}
-                          variant='outline-danger'
-                          size='sm'
-                        >
-                          x
-                        </Button>
-                      </Toast.Header>
-                      <Toast.Body>{policy.description}</Toast.Body>
-                    </Toast>
+                    <PolicyCard
+                      key={policy.id}
+                      permission={permission}
+                      policy={policy}
+                      onDeleteClicked={handlePolicyRemoveClicked}
+                    />
                   )
                 })}
                 <span>
@@ -271,23 +280,11 @@ export default function Permissions(props) {
           <td>
             {newPolicies.map((policy) => {
               return (
-                <Toast
-                  className='d-inline-block m-1'
+                <PolicyCard
                   key={policy.id}
-                >
-                  <Toast.Header closeButton={false}>
-                    <strong className='me-auto'>{policy.name}</strong>
-                    <Button
-                      data-val1={policy.id}
-                      onClick={handleNewPolicyRemoveClicked}
-                      variant='outline-danger'
-                      size='sm'
-                    >
-                      x
-                    </Button>
-                  </Toast.Header>
-                  <Toast.Body>{policy.description}</Toast.Body>
-                </Toast>
+                  policy={policy}
+                  onDeleteClicked={handleNewPolicyRemoveClicked}
+                />
               )
             })}
             <span>
@@ -315,6 +312,46 @@ export default function Permissions(props) {
         </tr>
       </tbody>
     </Table>
+  )
+}
+
+function PolicyCard(props) {
+  const { onDeleteClicked, permission, policy } = props
+  return (
+    <Toast className='d-inline-block m-1'>
+      <Toast.Header closeButton={false}>
+        <strong className='me-auto'>{policy.name}</strong>
+        <Button
+          data-bs-toggle='collapse'
+          data-bs-target={`#${permission.id}${policy.id}`}
+          aria-expanded='false'
+          aria-controls={`${permission.id}${policy.id}`}
+          variant='outline'
+          size='sm'
+        >
+          &#x21F2;
+        </Button>
+      </Toast.Header>
+      <Toast.Body className='collapse' id={`${permission.id}${policy.id}`}>
+        <Container>
+          <Row>
+            <Col sm={10}>{policy.description}</Col>
+            <Col sm={2}>
+              <Button
+                disabled={permission.inherited}
+                data-val1={permission.id}
+                data-val2={policy.id}
+                onClick={onDeleteClicked}
+                variant='outline-danger'
+                size='sm'
+              >
+                x
+              </Button>
+            </Col>
+          </Row>
+        </Container>
+      </Toast.Body>
+    </Toast>
   )
 }
 
