@@ -16,7 +16,8 @@
         "name":"Policy 1",
         "description": "Policy 1 description"
       }
-    ]
+    ],
+    "inherited":true
   },
   {
       "id": "perm2",
@@ -30,7 +31,7 @@
         "name": "Resourcetype 1"
       },
       "policies":[
-        {s
+        {
           "id":"policy1",
           "name":"Policy 1",
           "description": "Policy 1 description"
@@ -45,6 +46,7 @@
           "name":"Policy 3",
           "description": "Policy 3 description"
         }
-      ]
+      ],
+      "inherited":false
     }
 ]}

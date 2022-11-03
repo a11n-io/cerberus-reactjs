@@ -13,15 +13,10 @@ export default function Permissions(props) {
   const [policies, setPolicies] = useState([])
   const [newPermittee, setNewPermittee] = useState()
   const [newPolicies, setNewPolicies] = useState([])
+  const [activeInherit, setActiveInherit] = useState(false)
 
   useEffect(() => {
-    get(`accounts/${accountId}/resources/${resourceId}/permissions`)
-      .then((r) => {
-        if (r) {
-          setPermissions(r)
-        }
-      })
-      .catch((e) => console.log(e))
+    getPermissions()
 
     get(`accounts/${accountId}/users`)
       .then((r) => {
@@ -47,6 +42,29 @@ export default function Permissions(props) {
       })
       .catch((e) => console.log(e))
   }, [])
+
+  function getPermissions() {
+    get(`accounts/${accountId}/resources/${resourceId}/permissions`)
+      .then((r) => {
+        if (r) {
+          setPermissions(r)
+          if (r.length > 0) {
+            setActiveInherit(r[0].activeInherit)
+          }
+        }
+      })
+      .catch((e) => console.log(e))
+  }
+
+  function handleInheritToggled(e) {
+    post(`accounts/${accountId}/resources/${resourceId}/inheritance`, {
+      activeInherit: !activeInherit
+    })
+      .then(() => {
+        getPermissions()
+      })
+      .catch((e) => console.log(e))
+  }
 
   function handlePolicyRemoveClicked(e) {
     const permissionId = e.target.getAttribute('data-val1')
@@ -162,24 +180,22 @@ export default function Permissions(props) {
         <tr>
           <th>Who</th>
           <th>How</th>
-          <th />
+          <th><PrivateSwitch activeInherit={activeInherit} onInheritToggled={handleInheritToggled()}/></th>
         </tr>
       </thead>
       <tbody>
         {permissions.map((permission) => {
           return (
             <tr key={permission.id}>
-              <td>{permission.permittee.displayName}</td>
+              <td>{permission.permittee.displayName} {permission.inherited && <p>inherited</p>}</td>
               <td>
                 {permission.policies.map((policy) => {
                   return (
-                    <Toast
-                      className='d-inline-block m-1'
-                      key={`active-${policy.id}`}
-                    >
+                    <Toast className='d-inline-block m-1' key={policy.id}>
                       <Toast.Header closeButton={false}>
                         <strong className='me-auto'>{policy.name}</strong>
                         <Button
+                          disabled={permission.inherited}
                           data-val1={permission.id}
                           data-val2={policy.id}
                           onClick={handlePolicyRemoveClicked}
@@ -195,16 +211,14 @@ export default function Permissions(props) {
                 })}
                 <span>
                   <Form.Select
+                    disabled={permission.inherited}
                     onChange={handlePolicySelected}
                     data-val1={permission.id}
                   >
                     <option value=''>Select Policy</option>
                     {policies.map((policy) => {
                       return (
-                        <option
-                          key={`active-${permission.id}${policy.id}`}
-                          value={policy.id}
-                        >
+                        <option key={policy.id} value={policy.id}>
                           {policy.name}
                         </option>
                       )
@@ -214,6 +228,7 @@ export default function Permissions(props) {
               </td>
               <td>
                 <Button
+                  disabled={permission.inherited}
                   variant='danger'
                   onClick={handlePermissionRemoveClicked}
                   data-val1={permission.id}
@@ -253,7 +268,7 @@ export default function Permissions(props) {
               return (
                 <Toast
                   className='d-inline-block m-1'
-                  key={`newactive-${policy.id}`}
+                  key={policy.id}
                 >
                   <Toast.Header closeButton={false}>
                     <strong className='me-auto'>{policy.name}</strong>
@@ -275,7 +290,7 @@ export default function Permissions(props) {
                 <option value=''>Select Policy</option>
                 {policies.map((policy) => {
                   return (
-                    <option key={`new-${policy.id}`} value={policy.id}>
+                    <option key={policy.id} value={policy.id}>
                       {policy.name}
                     </option>
                   )
@@ -295,5 +310,17 @@ export default function Permissions(props) {
         </tr>
       </tbody>
     </Table>
+  )
+}
+
+function PrivateSwitch(props) {
+  const { activeInherit, onInheritToggled } = props
+
+  return (
+    <Form.Switch
+      label={activeInherit ? 'shared custody' : 'self custody'}
+      checked={activeInherit}
+      onChange={onInheritToggled}
+    />
   )
 }
