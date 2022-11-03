@@ -180,7 +180,12 @@ export default function Permissions(props) {
         <tr>
           <th>Who</th>
           <th>How</th>
-          <th><PrivateSwitch activeInherit={activeInherit} onInheritToggled={handleInheritToggled()}/></th>
+          <th>
+            <PrivateSwitch
+              activeInherit={activeInherit}
+              onInheritToggled={handleInheritToggled}
+            />
+          </th>
         </tr>
       </thead>
       <tbody>
