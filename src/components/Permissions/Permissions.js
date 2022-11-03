@@ -323,16 +323,16 @@ function PolicyCard(props) {
         <strong className='me-auto'>{policy.name}</strong>
         <Button
           data-bs-toggle='collapse'
-          data-bs-target={`#${permission.id}${policy.id}`}
+          data-bs-target={`#a${permission.id}${policy.id}`}
           aria-expanded='false'
-          aria-controls={`${permission.id}${policy.id}`}
+          aria-controls={`a${permission.id}${policy.id}`}
           variant='outline'
           size='sm'
         >
           &#x21F2;
         </Button>
       </Toast.Header>
-      <Toast.Body className='collapse' id={`${permission.id}${policy.id}`}>
+      <Toast.Body className='collapse' id={`a${permission.id}${policy.id}`}>
         <Container>
           <Row>
             <Col sm={10}>{policy.description}</Col>

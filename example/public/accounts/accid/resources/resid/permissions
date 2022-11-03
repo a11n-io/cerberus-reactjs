@@ -1,6 +1,6 @@
 {"code":200,"data":[
   {
-    "id": "perm1",
+    "id": "a38d21cf2-6903-4fd3-9851-4e4aa9ebd",
     "resourceId": "res1",
     "permittee": {
       "id":"user1",
@@ -12,7 +12,7 @@
     },
     "policies":[
       {
-        "id":"policy1",
+        "id":"a50024239a11-c5cf-48a9-b283-740a81866851",
         "name":"Policy 1",
         "description": "Policy 1 description"
       }
@@ -21,7 +21,7 @@
     "inherited":true
   },
   {
-      "id": "perm2",
+      "id": "a38d21cf2-6903-4fd3-9851-4e4aa9ebf",
       "resourceId": "res1",
       "permittee": {
         "id":"role11",
@@ -33,17 +33,17 @@
       },
       "policies":[
         {
-          "id":"policy1",
+          "id":"a50024239a11-c5cf-48a9-b283-740a81866851",
           "name":"Policy 1",
           "description": "Policy 1 description"
         },
         {
-          "id":"policy2",
+          "id":"a50024239a11-c5cf-48a9-b283-740a81866852",
           "name":"Policy 2",
           "description": "Policy 2 description"
         },
         {
-          "id":"policy3",
+          "id":"a50024239a11-c5cf-48a9-b283-740a81866853",
           "name":"Policy 3",
           "description": "Policy 3 description"
         }
