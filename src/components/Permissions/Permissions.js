@@ -171,8 +171,7 @@ export default function Permissions(props) {
   }
 
   function handleNewPolicyRemoveClicked(e) {
-    console.log('handleNewPolicyRemoveClicked')
-    const policyId = e.target.getAttribute('data-val1')
+    const policyId = e.target.getAttribute('data-val2')
     if (!policyId) {
       return
     }
@@ -317,29 +316,34 @@ export default function Permissions(props) {
 
 function PolicyCard(props) {
   const { onDeleteClicked, permission, policy } = props
+
+  const collapseId = (permission ? permission.id + policy.id : policy.id)
+  const deleteDisabled = (permission ? permission.inherited : false)
+  const permissionId = (permission ? permission.id : "")
+
   return (
     <Toast className='d-inline-block m-1'>
       <Toast.Header closeButton={false}>
         <strong className='me-auto'>{policy.name}</strong>
         <Button
           data-bs-toggle='collapse'
-          data-bs-target={`#a${permission.id}${policy.id}`}
+          data-bs-target={`#a${collapseId}`}
           aria-expanded='false'
-          aria-controls={`a${permission.id}${policy.id}`}
+          aria-controls={`a${collapseId}`}
           variant='outline'
           size='sm'
         >
           &#x21F2;
         </Button>
       </Toast.Header>
-      <Toast.Body className='collapse' id={`a${permission.id}${policy.id}`}>
+      <Toast.Body className='collapse' id={`a${collapseId}`}>
         <Container>
           <Row>
             <Col sm={10}>{policy.description}</Col>
             <Col sm={2}>
               <Button
-                disabled={permission.inherited}
-                data-val1={permission.id}
+                disabled={deleteDisabled}
+                data-val1={permissionId}
                 data-val2={policy.id}
                 onClick={onDeleteClicked}
                 variant='outline-danger'
