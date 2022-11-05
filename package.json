@@ -1,10 +1,10 @@
 {
-  "name": "cerberus-reactjs",
-  "version": "0.1.20",
+  "name": "@a11n-io/cerberus-reactjs",
+  "version": "0.1.21",
   "description": "Cerberus react components",
   "author": "superkruger",
   "license": "MIT",
-  "repository": "superkruger/cerberus-reactjs",
+  "repository": "a11n-io/cerberus-reactjs",
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
   "source": "src/index.js",
