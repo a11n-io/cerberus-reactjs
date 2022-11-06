@@ -18,5 +18,5 @@ export default function AccessGuard(props) {
       })
       .catch((e) => console.log(e))
   }, [])
-  return <>{hasAccess && props.children}</>
+  return <React.Fragment>{hasAccess && props.children}</React.Fragment>
 }
