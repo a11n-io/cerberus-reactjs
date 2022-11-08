@@ -1,22 +1,37 @@
 import React, { useEffect, useState } from 'react'
-import useFetch from '../../hooks'
+import { ReadyState } from 'react-use-websocket'
 
 export default function AccessGuard(props) {
-  const { cerberusUrl, cerberusToken, accountId, userId, resourceId, action } =
-    props
-  const { get } = useFetch(cerberusUrl, cerberusToken)
+  const { wsContext, resourceId, action, children, otherwise } = props
   const [hasAccess, setHasAccess] = useState(false)
+  const [messageId, setMessageId] = useState('')
 
   useEffect(() => {
-    get(
-      `accounts/${accountId}/access/permitteeid/${userId}/resourceid/${resourceId}/actionname/${action}`
-    )
-      .then((r) => {
-        if (r) {
-          setHasAccess(r)
-        }
-      })
-      .catch((e) => console.log(e))
-  }, [])
-  return <React.Fragment>{hasAccess && props.children}</React.Fragment>
+    if (wsContext.readyState === ReadyState.OPEN) {
+      // eslint-disable-next-line no-undef
+      const msgId = crypto.randomUUID()
+      setMessageId(msgId)
+
+      wsContext.sendMessage(
+        JSON.stringify({
+          messageId: msgId,
+          hasAccessRequest: {
+            resourceId: resourceId,
+            actionName: action
+          }
+        })
+      )
+    }
+  }, [wsContext.sendMessage, wsContext.readyState])
+
+  useEffect(() => {
+    if (wsContext.lastMessage && wsContext.lastMessage.data) {
+      const msg = JSON.parse(wsContext.lastMessage.data)
+      if (msg && msg.messageId === messageId) {
+        setHasAccess(msg.granted)
+      }
+    }
+  }, [wsContext.lastMessage])
+
+  return <React.Fragment>{hasAccess ? children : otherwise}</React.Fragment>
 }

@@ -13,7 +13,7 @@ import {
 } from 'react-bootstrap'
 
 export default function Permissions(props) {
-  const { cerberusUrl, cerberusToken, accountId, resourceId } = props
+  const { cerberusUrl, cerberusToken, resourceId } = props
   const { get, post, del, loading } = useFetch(cerberusUrl, cerberusToken)
   const [permissions, setPermissions] = useState([])
   const [users, setUsers] = useState([])
@@ -27,7 +27,7 @@ export default function Permissions(props) {
   useEffect(() => {
     getPermissions()
 
-    get(`accounts/${accountId}/users`)
+    get(`users`)
       .then((r) => {
         if (r) {
           setUsers(r)
@@ -35,7 +35,7 @@ export default function Permissions(props) {
       })
       .catch((e) => console.log(e))
 
-    get(`accounts/${accountId}/roles`)
+    get(`roles`)
       .then((r) => {
         if (r) {
           setRoles(r)
@@ -43,7 +43,7 @@ export default function Permissions(props) {
       })
       .catch((e) => console.log(e))
 
-    get(`accounts/${accountId}/resources/${resourceId}/policies`)
+    get(`resources/${resourceId}/policies`)
       .then((r) => {
         if (r) {
           setPolicies(r)
@@ -53,7 +53,7 @@ export default function Permissions(props) {
   }, [])
 
   function getPermissions() {
-    get(`accounts/${accountId}/resources/${resourceId}/permissions`)
+    get(`resources/${resourceId}/permissions`)
       .then((r) => {
         if (r) {
           setPermissions(r)
@@ -67,7 +67,7 @@ export default function Permissions(props) {
   }
 
   function handleInheritToggled(e) {
-    post(`accounts/${accountId}/resources/${resourceId}/inheritance`, {
+    post(`resources/${resourceId}/inheritance`, {
       activeInherit: !activeInherit
     })
       .then(() => {
@@ -86,9 +86,7 @@ export default function Permissions(props) {
       return
     }
 
-    del(
-      `accounts/${accountId}/permissions/${permissionId}/policies/${policyId}`
-    )
+    del(`permissions/${permissionId}/policies/${policyId}`)
       .then((r) => {
         setPermissions((prev) => [
           ...prev.filter((p) => p.id !== permissionId),
@@ -105,9 +103,7 @@ export default function Permissions(props) {
       return
     }
 
-    post(
-      `accounts/${accountId}/permissions/${permissionId}/policies/${policyId}`
-    )
+    post(`permissions/${permissionId}/policies/${policyId}`)
       .then((r) => {
         const permission = permissions.find((p) => p.id === permissionId)
         const policy = policies.find((p) => p.id === policyId)
@@ -129,7 +125,7 @@ export default function Permissions(props) {
       return
     }
 
-    del(`accounts/${accountId}/permissions/${permissionId}`)
+    del(`permissions/${permissionId}`)
       .then((r) => {
         setPermissions((prev) =>
           prev.filter((perm) => perm.id !== permissionId)
@@ -143,7 +139,7 @@ export default function Permissions(props) {
       return
     }
 
-    post(`accounts/${accountId}/permissions`, {
+    post(`permissions`, {
       permitteeId: newPermittee,
       resourceId: resourceId,
       policyIds: newPolicies.map((p) => p.id)
@@ -317,9 +313,9 @@ export default function Permissions(props) {
 function PolicyCard(props) {
   const { onDeleteClicked, permission, policy } = props
 
-  const collapseId = (permission ? permission.id + policy.id : policy.id)
-  const deleteDisabled = (permission ? permission.inherited : false)
-  const permissionId = (permission ? permission.id : "")
+  const collapseId = permission ? permission.id + policy.id : policy.id
+  const deleteDisabled = permission ? permission.inherited : false
+  const permissionId = permission ? permission.id : ''
 
   return (
     <Toast className='d-inline-block m-1'>
