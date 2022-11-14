@@ -13,16 +13,18 @@ import {
   Tab
 } from 'react-bootstrap'
 import { Loader } from '../../uikit'
-import { CerberusContext } from '../CerberusContext/CerberusContext'
+import { CerberusContext } from '../CerberusContext'
 
 export default function Users(props) {
   const cerberusCtx = useContext(CerberusContext)
   const [users, setUsers] = useState([])
-  const [selectedUser, setSelectedUser] = useState()
+  const [selectedUser, setSelectedUser] = useState(null)
   const { get, loading } = useFetch(
     cerberusCtx.cerberusUrl,
     cerberusCtx.cerberusToken
   )
+
+  const { UserSelectedComponent, NoUserSelectedComponent } = props
 
   useEffect(() => {
     get('users')
@@ -32,7 +34,15 @@ export default function Users(props) {
 
   function handleUserClicked(e) {
     const userId = e.target.getAttribute('data-val1')
-    setSelectedUser((prev) => prev.filter((u) => u.id === userId))
+
+    if (selectedUser !== null && selectedUser !== undefined) {
+      if (selectedUser.id === userId) {
+        setSelectedUser(null)
+        return
+      }
+    }
+
+    setSelectedUser(users.find((u) => u.id === userId))
   }
 
   if (loading) {
@@ -68,12 +78,17 @@ export default function Users(props) {
           <Col>
             {selectedUser ? (
               <UserSelected
+                UserSelectedComponent={UserSelectedComponent}
                 user={selectedUser}
                 setSelectedUser={setSelectedUser}
                 setUsers={setUsers}
               />
             ) : (
-              <NoUserSelected setUsers={setUsers} />
+              <React.Fragment>
+                {NoUserSelectedComponent !== undefined && (
+                  <NoUserSelectedComponent />
+                )}
+              </React.Fragment>
             )}
           </Col>
         </Row>
@@ -83,21 +98,25 @@ export default function Users(props) {
 }
 
 function UserSelected(props) {
-  const { user, setUsers, setSelectedUser } = props
+  const { user, setUsers, setSelectedUser, UserSelectedComponent } = props
 
   return (
     <Card>
       <Card.Header>
-        <h1>Role: {user.name}</h1>
+        <h1>User: {user.displayName}</h1>
       </Card.Header>
       <Card.Body>
         <Tabs defaultActiveKey='details' className='mb-3'>
           <Tab eventKey='details' title='Details'>
-            <Details
-              user={user}
-              setSelectedUser={setSelectedUser}
-              setUsers={setUsers}
-            />
+            {UserSelectedComponent !== undefined ? (
+              <UserSelectedComponent userId={user.id} />
+            ) : (
+              <Details
+                user={user}
+                setSelectedUser={setSelectedUser}
+                setUsers={setUsers}
+              />
+            )}
           </Tab>
           <Tab eventKey='roles' title='Roles'>
             <Roles user={user} setUsers={setUsers} />
@@ -114,8 +133,8 @@ function Details(props) {
     cerberusCtx.cerberusUrl,
     cerberusCtx.cerberusToken
   )
-  const [userName, setUserName] = useState()
-  const [displayName, setDisplayName] = useState()
+  const [userName, setUserName] = useState('')
+  const [displayName, setDisplayName] = useState('')
   const { user, setUsers, setSelectedUser } = props
 
   useEffect(() => {
@@ -132,7 +151,7 @@ function Details(props) {
         if (r) {
           setUsers((prev) =>
             [...prev.filter((r) => r.id !== user.id), r].sort(
-              (a, b) => a.name > b.name
+              (a, b) => a.displayName > b.displayName
             )
           )
         }
@@ -197,18 +216,18 @@ function Details(props) {
 
 function Roles(props) {
   const cerberusCtx = useContext(CerberusContext)
-  const { get, loading } = useFetch(
+  const { get, post, del, loading } = useFetch(
     cerberusCtx.cerberusUrl,
     cerberusCtx.cerberusToken
   )
-  const [roles, setRoles] = useState()
+  const [roles, setRoles] = useState([])
   const { user, setUsers } = props
 
   useEffect(() => {
     get(`users/${user.id}/roles`)
       .then((r) => setRoles(r))
       .catch((e) => console.log(e))
-  })
+  }, [user])
 
   function handleRoleUserToggled(e) {
     const selected = roles.find((u) => u.id === e.target.value)
@@ -245,6 +264,10 @@ function Roles(props) {
     }
   }
 
+  if (loading) {
+    return <Loader />
+  }
+
   return (
     <ListGroup>
       {roles.map((role) => {
@@ -256,7 +279,7 @@ function Roles(props) {
             <div className='ms-2 me-auto'>
               <Form.Switch
                 id={`user-switch-${role.id}`}
-                label={role.name}
+                label={role.displayName}
                 checked={role.hasUser}
                 value={role.id}
                 onChange={handleRoleUserToggled}
@@ -266,68 +289,5 @@ function Roles(props) {
         )
       })}
     </ListGroup>
-  )
-}
-
-function NoUserSelected(props) {
-  const cerberusCtx = useContext(CerberusContext)
-  const { post, loading } = useFetch(
-    cerberusCtx.cerberusUrl,
-    cerberusCtx.cerberusToken
-  )
-  const [userName, setUserName] = useState()
-  const [displayName, setDisplayName] = useState()
-  const { setUsers } = props
-
-  function handleUserNameChanged(e) {
-    setUserName(e.target.value)
-  }
-
-  function handleDisplayNameChanged(e) {
-    setDisplayName(e.target.value)
-  }
-
-  function handleFormSubmit(e) {
-    e.preventDefault()
-    post('users', {
-      userName: userName,
-      displayName: displayName
-    })
-      .then((r) => {
-        if (r) {
-          setUsers((prev) => [...prev, r].sort((a, b) => a.displayName > b.displayName))
-        }
-      })
-      .catch((e) => console.log(e))
-  }
-
-  if (loading) {
-    return <Loader />
-  }
-
-  return (
-    <React.Fragment>
-      <Form onSubmit={handleFormSubmit}>
-        <Form.Group className='mb-3'>
-          <Form.Label>Username</Form.Label>
-          <Form.Control
-            type='text'
-            placeholder='Enter username'
-            onChange={handleUserNameChanged}
-          />
-        </Form.Group>
-        <Form.Group className='mb-3'>
-          <Form.Label>Display name</Form.Label>
-          <Form.Control
-            type='text'
-            placeholder='Enter display name'
-            onChange={handleDisplayNameChanged}
-          />
-        </Form.Group>
-        <Button variant='primary' type='submit'>
-          Create
-        </Button>
-      </Form>
-    </React.Fragment>
   )
 }

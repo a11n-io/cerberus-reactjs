@@ -1,1 +1,1 @@
-export { WsContext, WsProvider } from './CerberusContext'
+export { CerberusContext, CerberusProvider } from './CerberusContext'

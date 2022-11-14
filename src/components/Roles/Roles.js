@@ -13,16 +13,17 @@ import {
   Tab
 } from 'react-bootstrap'
 import { Loader } from '../../uikit'
-import { CerberusContext } from '../CerberusContext/CerberusContext'
+import { CerberusContext } from '../CerberusContext'
 
 export default function Roles(props) {
   const cerberusCtx = useContext(CerberusContext)
   const [roles, setRoles] = useState([])
-  const [selectedRole, setSelectedRole] = useState()
+  const [selectedRole, setSelectedRole] = useState(null)
   const { get, loading } = useFetch(
     cerberusCtx.cerberusUrl,
     cerberusCtx.cerberusToken
   )
+  const { RoleSelectedComponent, NoRoleSelectedComponent } = props
 
   useEffect(() => {
     get('roles')
@@ -32,7 +33,15 @@ export default function Roles(props) {
 
   function handleRoleClicked(e) {
     const roleId = e.target.getAttribute('data-val1')
-    setSelectedRole((prev) => prev.filter((r) => r.id === roleId))
+
+    if (selectedRole !== null && selectedRole !== undefined) {
+      if (selectedRole.id === roleId) {
+        setSelectedRole(null)
+        return
+      }
+    }
+
+    setSelectedRole(roles.find((r) => r.id === roleId))
   }
 
   if (loading) {
@@ -55,7 +64,7 @@ export default function Roles(props) {
                     className='d-flex justify-content-between align-items-start'
                   >
                     <div className='ms-2 me-auto'>
-                      <div className='fw-bold'>{role.name}</div>
+                      <div className='fw-bold'>{role.displayName}</div>
                     </div>
                     <Badge bg='primary' pill>
                       {role.userCount}
@@ -68,12 +77,19 @@ export default function Roles(props) {
           <Col>
             {selectedRole ? (
               <RoleSelected
+                RoleSelectedComponent={RoleSelectedComponent}
                 role={selectedRole}
                 setSelectedRole={setSelectedRole}
                 setRoles={setRoles}
               />
             ) : (
-              <NoRoleSelected setRoles={setRoles} />
+              <React.Fragment>
+                {NoRoleSelectedComponent !== undefined ? (
+                  <NoRoleSelectedComponent />
+                ) : (
+                  <NoRoleSelected setRoles={setRoles} />
+                )}
+              </React.Fragment>
             )}
           </Col>
         </Row>
@@ -88,15 +104,15 @@ function RoleSelected(props) {
   return (
     <Card>
       <Card.Header>
-        <h1>Role: {role.name}</h1>
+        <h1>Role: {role.displayName}</h1>
       </Card.Header>
       <Card.Body>
         <Tabs defaultActiveKey='details' className='mb-3'>
           <Tab eventKey='details' title='Details'>
             <Details
-              user={role}
+              role={role}
               setSelectedRole={setSelectedRole}
-              setUsers={setRoles}
+              setRoles={setRoles}
             />
           </Tab>
           <Tab eventKey='users' title='Users'>
@@ -114,11 +130,11 @@ function Details(props) {
     cerberusCtx.cerberusUrl,
     cerberusCtx.cerberusToken
   )
-  const [name, setName] = useState()
+  const [name, setName] = useState('')
   const { role, setRoles, setSelectedRole } = props
 
   useEffect(() => {
-    setName(role.name)
+    setName(role.displayName)
   }, [role])
 
   function handleFormSubmit(e) {
@@ -130,7 +146,7 @@ function Details(props) {
         if (r) {
           setRoles((prev) =>
             [...prev.filter((r) => r.id !== role.id), r].sort(
-              (a, b) => a.name > b.name
+              (a, b) => a.displayName > b.displayName
             )
           )
         }
@@ -182,18 +198,18 @@ function Details(props) {
 
 function Users(props) {
   const cerberusCtx = useContext(CerberusContext)
-  const { get, loading } = useFetch(
+  const { get, post, del, loading } = useFetch(
     cerberusCtx.cerberusUrl,
     cerberusCtx.cerberusToken
   )
-  const [users, setUsers] = useState()
+  const [users, setUsers] = useState([])
   const { role, setRoles } = props
 
   useEffect(() => {
     get(`roles/${role.id}/users`)
       .then((r) => setUsers(r))
       .catch((e) => console.log(e))
-  })
+  }, [role])
 
   function handleUserRoleToggled(e) {
     const selected = users.find((u) => u.id === e.target.value)
@@ -230,6 +246,10 @@ function Users(props) {
     }
   }
 
+  if (loading) {
+    return <Loader />
+  }
+
   return (
     <ListGroup>
       {users.map((user) => {
@@ -241,7 +261,7 @@ function Users(props) {
             <div className='ms-2 me-auto'>
               <Form.Switch
                 id={`role-switch-${user.id}`}
-                label={user.name}
+                label={user.displayName}
                 checked={user.inRole}
                 value={user.id}
                 onChange={handleUserRoleToggled}
@@ -274,7 +294,9 @@ function NoRoleSelected(props) {
     })
       .then((r) => {
         if (r) {
-          setRoles((prev) => [...prev, r].sort((a, b) => a.name > b.name))
+          setRoles((prev) =>
+            [...prev, r].sort((a, b) => a.displayName > b.displayName)
+          )
         }
       })
       .catch((e) => console.log(e))

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import './Permissions.css'
 import useFetch from '../../hooks/useFetch'
 import Loader from '../../uikit/Loader'
@@ -11,10 +11,15 @@ import {
   Table,
   Toast
 } from 'react-bootstrap'
+import { CerberusContext } from '../CerberusContext'
 
 export default function Permissions(props) {
-  const { cerberusUrl, cerberusToken, resourceId } = props
-  const { get, post, del, loading } = useFetch(cerberusUrl, cerberusToken)
+  const { resourceId } = props
+  const cerberusCtx = useContext(CerberusContext)
+  const { get, post, del, loading } = useFetch(
+    cerberusCtx.cerberusUrl,
+    cerberusCtx.cerberusToken
+  )
   const [permissions, setPermissions] = useState([])
   const [users, setUsers] = useState([])
   const [roles, setRoles] = useState([])

@@ -1,0 +1,12 @@
+{
+  "code": 200,
+  "data": [
+    {
+      "id": "user1",
+      "displayName": "User 1",
+      "userName": "user1",
+      "inRole": true,
+      "roleCount": 1
+    }
+  ]
+}
