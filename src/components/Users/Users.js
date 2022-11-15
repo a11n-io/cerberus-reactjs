@@ -246,6 +246,14 @@ function Roles(props) {
               return r
             })
           ])
+          setRoles((prev) =>
+            prev.map((r) => {
+              if (r.id === selected.id) {
+                return { ...r, hasUser: true }
+              }
+              return r
+            })
+          )
         })
         .catch((e) => console.log(e))
     } else {
@@ -254,11 +262,19 @@ function Roles(props) {
           setUsers((prev) => [
             ...prev.map((r) => {
               if (r.id === user.id) {
-                return { ...r, roleCount: r.roleCount - 1 }
+                return { ...r, roleCount: r.roleCount - 1, hasUser: false }
               }
               return r
             })
           ])
+          setRoles((prev) =>
+            prev.map((r) => {
+              if (r.id === selected.id) {
+                return { ...r, hasUser: false }
+              }
+              return r
+            })
+          )
         })
         .catch((e) => console.log(e))
     }

@@ -228,19 +228,36 @@ function Users(props) {
               return r
             })
           ])
+          setUsers((prev) =>
+            prev.map((u) => {
+              if (u.id === selected.id) {
+                return { ...u, inRole: true }
+              }
+              return u
+            })
+          )
         })
         .catch((e) => console.log(e))
     } else {
       del(`roles/${role.id}/users/${selected.id}`)
         .then((d) => {
-          setRoles((prev) => [
-            ...prev.map((r) => {
+          setRoles((prev) =>
+            prev.map((r) => {
               if (r.id === role.id) {
                 return { ...r, userCount: r.userCount - 1 }
               }
               return r
             })
-          ])
+          )
+
+          setUsers((prev) =>
+            prev.map((u) => {
+              if (u.id === selected.id) {
+                return { ...u, inRole: false }
+              }
+              return u
+            })
+          )
         })
         .catch((e) => console.log(e))
     }
