@@ -236,7 +236,7 @@ function Roles(props) {
     }
 
     if (selected.hasUser === false) {
-      post(`users/${user.id}/roles/${selected.id}`)
+      post(`roles/${selected.id}/users/${user.id}`)
         .then((d) => {
           setUsers((prev) => [
             ...prev.map((r) => {
@@ -249,7 +249,7 @@ function Roles(props) {
         })
         .catch((e) => console.log(e))
     } else {
-      del(`users/${user.id}/roles/${selected.id}`)
+      del(`roles/${selected.id}/users/${user.id}`)
         .then((d) => {
           setUsers((prev) => [
             ...prev.map((r) => {
