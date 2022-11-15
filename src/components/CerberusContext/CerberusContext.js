@@ -4,7 +4,7 @@ import useWebSocket from 'react-use-websocket'
 const CerberusContext = createContext(null)
 
 function CerberusProvider(props) {
-  const { cerberusUrl, socketUrl, suffix } = props
+  const { cerberusUrl, socketUrl, suffix = '' } = props
   const [cerberusToken, setCerberusToken] = useState()
   const [sendMessage, setSendMessage] = useState(null)
   const [lastMessage, setLastMessage] = useState(null)
