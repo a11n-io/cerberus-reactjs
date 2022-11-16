@@ -60,12 +60,15 @@ export default function Users(props) {
                   <ListGroup.Item
                     key={user.id}
                     action
+                    active={selectedUser && selectedUser.id === user.id}
                     onClick={handleUserClicked}
                     data-val1={user.id}
                     className='d-flex justify-content-between align-items-start'
                   >
                     <div className='ms-2 me-auto'>
-                      <div className='fw-bold'>{user.displayName}</div>
+                      <div className='fw-bold' data-val1={user.id}>
+                        {user.displayName}
+                      </div>
                     </div>
                     <Badge bg='primary' pill>
                       {user.roleCount}

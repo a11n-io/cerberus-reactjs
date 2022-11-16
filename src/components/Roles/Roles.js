@@ -59,12 +59,15 @@ export default function Roles(props) {
                   <ListGroup.Item
                     key={role.id}
                     action
+                    active={selectedRole && selectedRole.id === role.id}
                     onClick={handleRoleClicked}
                     data-val1={role.id}
                     className='d-flex justify-content-between align-items-start'
                   >
                     <div className='ms-2 me-auto'>
-                      <div className='fw-bold'>{role.displayName}</div>
+                      <div className='fw-bold' data-val1={role.id}>
+                        {role.displayName}
+                      </div>
                     </div>
                     <Badge bg='primary' pill>
                       {role.userCount}
