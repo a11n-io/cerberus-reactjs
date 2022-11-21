@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 import { CerberusContext } from '../CerberusContext'
 import { ReadyState } from 'react-use-websocket'
 
-const useAccess = ({ resourceId, action, setGranted }) => {
+const useAccess = (resourceId, action, setGranted) => {
   const [messageId, setMessageId] = useState('')
   const cerberusCtx = useContext(CerberusContext)
 
