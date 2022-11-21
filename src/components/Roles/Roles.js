@@ -154,7 +154,7 @@ function Details(props) {
           )
         }
       })
-      .catch((e) => console.log(e))
+      .catch((e) => console.error(e))
   }
 
   function handleNameChanged(e) {
@@ -171,7 +171,7 @@ function Details(props) {
           })
         }
       })
-      .catch((e) => console.log(e))
+      .catch((e) => console.error(e))
   }
 
   if (loading) {
@@ -211,7 +211,7 @@ function Users(props) {
   useEffect(() => {
     get(`roles/${role.id}/users`)
       .then((r) => setUsers(r))
-      .catch((e) => console.log(e))
+      .catch((e) => console.error(e))
   }, [role])
 
   function handleUserRoleToggled(e) {
@@ -240,7 +240,7 @@ function Users(props) {
             })
           )
         })
-        .catch((e) => console.log(e))
+        .catch((e) => console.error(e))
     } else {
       del(`roles/${role.id}/users/${selected.id}`)
         .then((d) => {
@@ -262,7 +262,7 @@ function Users(props) {
             })
           )
         })
-        .catch((e) => console.log(e))
+        .catch((e) => console.error(e))
     }
   }
 
@@ -319,7 +319,7 @@ function NoRoleSelected(props) {
           )
         }
       })
-      .catch((e) => console.log(e))
+      .catch((e) => console.error(e))
   }
 
   if (loading) {

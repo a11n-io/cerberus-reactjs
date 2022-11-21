@@ -12,9 +12,10 @@ import {
   Toast
 } from 'react-bootstrap'
 import { CerberusContext } from '../CerberusContext'
+import useAccess from '../useAccess'
 
 export default function Permissions(props) {
-  const { resourceId } = props
+  const { resourceId, changeAction } = props
   const cerberusCtx = useContext(CerberusContext)
   const { get, post, del, loading } = useFetch(
     cerberusCtx.cerberusUrl,
@@ -28,6 +29,9 @@ export default function Permissions(props) {
   const [newPolicies, setNewPolicies] = useState([])
   const [activeInherit, setActiveInherit] = useState(false)
   const [hasParent, setHasParent] = useState(false)
+  const [canChangePermissions, setCanChangePermissions] = useState(false)
+
+  useAccess(resourceId, changeAction, setCanChangePermissions)
 
   useEffect(() => {
     getPermissions()
@@ -38,7 +42,7 @@ export default function Permissions(props) {
           setUsers(r)
         }
       })
-      .catch((e) => console.log(e))
+      .catch((e) => console.error(e))
 
     get(`roles`)
       .then((r) => {
@@ -46,7 +50,7 @@ export default function Permissions(props) {
           setRoles(r)
         }
       })
-      .catch((e) => console.log(e))
+      .catch((e) => console.error(e))
 
     get(`resources/${resourceId}/policies`)
       .then((r) => {
@@ -54,7 +58,7 @@ export default function Permissions(props) {
           setPolicies(r)
         }
       })
-      .catch((e) => console.log(e))
+      .catch((e) => console.error(e))
   }, [])
 
   function getPermissions() {
@@ -68,7 +72,7 @@ export default function Permissions(props) {
           }
         }
       })
-      .catch((e) => console.log(e))
+      .catch((e) => console.error(e))
   }
 
   function handleInheritToggled(e) {
@@ -78,14 +82,12 @@ export default function Permissions(props) {
       .then(() => {
         getPermissions()
       })
-      .catch((e) => console.log(e))
+      .catch((e) => console.error(e))
   }
 
   function handlePolicyRemoveClicked(e) {
     const permissionId = e.target.getAttribute('data-val1')
     const policyId = e.target.getAttribute('data-val2')
-
-    console.log('handlePolicyRemoveClicked', permissionId, policyId)
 
     if (!permissionId || !policyId) {
       return
@@ -98,7 +100,7 @@ export default function Permissions(props) {
           r
         ])
       })
-      .catch((e) => console.log(e))
+      .catch((e) => console.error(e))
   }
 
   function handlePolicySelected(e) {
@@ -121,7 +123,7 @@ export default function Permissions(props) {
           ])
         }
       })
-      .catch((e) => console.log(e))
+      .catch((e) => console.error(e))
   }
 
   function handlePermissionRemoveClicked(e) {
@@ -136,7 +138,7 @@ export default function Permissions(props) {
           prev.filter((perm) => perm.id !== permissionId)
         )
       })
-      .catch((e) => console.log(e))
+      .catch((e) => console.error(e))
   }
 
   function handlePermissionAddClicked(e) {
@@ -150,7 +152,7 @@ export default function Permissions(props) {
       policyIds: newPolicies.map((p) => p.id)
     })
       .then((r) => setPermissions((prev) => [...prev, r]))
-      .catch((e) => console.log(e))
+      .catch((e) => console.error(e))
       .finally(() => {
         setNewPermittee(null)
         setNewPolicies([])
@@ -193,6 +195,7 @@ export default function Permissions(props) {
           <th>
             {hasParent && (
               <PrivateSwitch
+                disabled={!canChangePermissions}
                 activeInherit={activeInherit}
                 onInheritToggled={handleInheritToggled}
               />
@@ -216,6 +219,7 @@ export default function Permissions(props) {
                 {permission.policies.map((policy) => {
                   return (
                     <PolicyCard
+                      disabled={!canChangePermissions}
                       key={policy.id}
                       permission={permission}
                       policy={policy}
@@ -225,7 +229,7 @@ export default function Permissions(props) {
                 })}
                 <span>
                   <Form.Select
-                    disabled={permission.inherited}
+                    disabled={!canChangePermissions || permission.inherited}
                     onChange={handlePolicySelected}
                     data-val1={permission.id}
                   >
@@ -242,7 +246,7 @@ export default function Permissions(props) {
               </td>
               <td>
                 <Button
-                  disabled={permission.inherited}
+                  disabled={!canChangePermissions || permission.inherited}
                   variant='danger'
                   onClick={handlePermissionRemoveClicked}
                   data-val1={permission.id}
@@ -255,7 +259,10 @@ export default function Permissions(props) {
         })}
         <tr>
           <td>
-            <Form.Select onChange={handleNewPermitteeSelected}>
+            <Form.Select
+              disabled={!canChangePermissions}
+              onChange={handleNewPermitteeSelected}
+            >
               <option value=''>Select Role or User</option>
               <optgroup label='Roles'>
                 {roles.map((role) => {
@@ -288,7 +295,10 @@ export default function Permissions(props) {
               )
             })}
             <span>
-              <Form.Select onChange={handleNewPolicySelected}>
+              <Form.Select
+                disabled={!canChangePermissions}
+                onChange={handleNewPolicySelected}
+              >
                 <option value=''>Select Policy</option>
                 {policies.map((policy) => {
                   return (
@@ -303,7 +313,11 @@ export default function Permissions(props) {
           <td>
             <Button
               variant='primary'
-              disabled={!newPermittee || newPolicies.length === 0}
+              disabled={
+                !canChangePermissions ||
+                !newPermittee ||
+                newPolicies.length === 0
+              }
               onClick={handlePermissionAddClicked}
             >
               Add
@@ -316,10 +330,10 @@ export default function Permissions(props) {
 }
 
 function PolicyCard(props) {
-  const { onDeleteClicked, permission, policy } = props
+  const { onDeleteClicked, permission, policy, disabled } = props
 
   const collapseId = permission ? permission.id + policy.id : policy.id
-  const deleteDisabled = permission ? permission.inherited : false
+  const deleteDisabled = disabled || (permission ? permission.inherited : false)
   const permissionId = permission ? permission.id : ''
 
   return (
@@ -361,10 +375,11 @@ function PolicyCard(props) {
 }
 
 function PrivateSwitch(props) {
-  const { activeInherit, onInheritToggled } = props
+  const { activeInherit, onInheritToggled, disabled } = props
 
   return (
     <Form.Switch
+      disabled={disabled}
       label={activeInherit ? 'shared custody' : 'self custody'}
       checked={activeInherit}
       onChange={onInheritToggled}

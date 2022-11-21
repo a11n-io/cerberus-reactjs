@@ -29,7 +29,7 @@ export default function Users(props) {
   useEffect(() => {
     get('users')
       .then((r) => setUsers(r))
-      .catch((e) => console.log(e))
+      .catch((e) => console.error(e))
   }, [])
 
   function handleUserClicked(e) {
@@ -159,7 +159,7 @@ function Details(props) {
           )
         }
       })
-      .catch((e) => console.log(e))
+      .catch((e) => console.error(e))
   }
 
   function handleUserNameChanged(e) {
@@ -180,7 +180,7 @@ function Details(props) {
           })
         }
       })
-      .catch((e) => console.log(e))
+      .catch((e) => console.error(e))
   }
 
   if (loading) {
@@ -229,7 +229,7 @@ function Roles(props) {
   useEffect(() => {
     get(`users/${user.id}/roles`)
       .then((r) => setRoles(r))
-      .catch((e) => console.log(e))
+      .catch((e) => console.error(e))
   }, [user])
 
   function handleRoleUserToggled(e) {
@@ -258,7 +258,7 @@ function Roles(props) {
             })
           )
         })
-        .catch((e) => console.log(e))
+        .catch((e) => console.error(e))
     } else {
       del(`roles/${selected.id}/users/${user.id}`)
         .then((d) => {
@@ -279,7 +279,7 @@ function Roles(props) {
             })
           )
         })
-        .catch((e) => console.log(e))
+        .catch((e) => console.error(e))
     }
   }
 
