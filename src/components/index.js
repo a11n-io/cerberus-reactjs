@@ -1,5 +1,6 @@
 export { default as Permissions } from './Permissions'
 export { default as AccessGuard } from './AccessGuard'
+export { default as useAccess } from './useAccess'
 export { default as Users } from './Users'
 export { default as Roles } from './Roles'
 export { CerberusContext, CerberusProvider } from './CerberusContext'
