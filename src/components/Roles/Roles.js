@@ -107,7 +107,7 @@ function RoleSelected(props) {
   return (
     <Card>
       <Card.Header>
-        <h1>Role: {role.displayName}</h1>
+        <h2>Role: {role.displayName}</h2>
       </Card.Header>
       <Card.Body>
         <Tabs defaultActiveKey='details' className='mb-3'>

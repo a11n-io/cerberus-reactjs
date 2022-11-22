@@ -106,7 +106,7 @@ function UserSelected(props) {
   return (
     <Card>
       <Card.Header>
-        <h1>User: {user.displayName}</h1>
+        <h2>User: {user.displayName}</h2>
       </Card.Header>
       <Card.Body>
         <Tabs defaultActiveKey='details' className='mb-3'>
