@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react'
-import { CerberusContext } from '../components/CerberusContext/CerberusContext'
+import { CerberusContext } from '../components'
 
 const useFetch = (baseUrl, token) => {
   const [loading, setLoading] = useState(false)
@@ -21,7 +21,7 @@ const useFetch = (baseUrl, token) => {
 
       console.log('GET ' + baseUrl + url, hdrs)
 
-      fetch(baseUrl + url + cerberusCtx.suffix, {
+      fetch(cerberusCtx.apiUrl + baseUrl + url + cerberusCtx.suffix, {
         method: 'get',
         headers: hdrs
       })
@@ -45,7 +45,7 @@ const useFetch = (baseUrl, token) => {
 
     return new Promise((resolve, reject) => {
       setLoading(true)
-      fetch(baseUrl + url + cerberusCtx.suffix, {
+      fetch(cerberusCtx.apiUrl + baseUrl + url + cerberusCtx.suffix, {
         method: 'post',
         headers: hdrs,
         body: JSON.stringify(body)
@@ -70,7 +70,7 @@ const useFetch = (baseUrl, token) => {
 
     return new Promise((resolve, reject) => {
       setLoading(true)
-      fetch(baseUrl + url + cerberusCtx.suffix, {
+      fetch(cerberusCtx.apiUrl + baseUrl + url + cerberusCtx.suffix, {
         method: 'put',
         headers: hdrs,
         body: JSON.stringify(body)
@@ -95,7 +95,7 @@ const useFetch = (baseUrl, token) => {
 
     return new Promise((resolve, reject) => {
       setLoading(true)
-      fetch(baseUrl + url + cerberusCtx.suffix, {
+      fetch(cerberusCtx.apiUrl + baseUrl + url + cerberusCtx.suffix, {
         method: 'delete',
         headers: hdrs
       })
