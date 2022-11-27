@@ -5,10 +5,9 @@ const useFetch = (baseUrl, token) => {
   const [loading, setLoading] = useState(false)
   const cerberusCtx = useContext(CerberusContext)
 
-  const defaultHeaders = {
+  let hdrs = {
     'Content-Type': 'application/json'
   }
-  let hdrs = defaultHeaders
   if (token) {
     hdrs = { ...hdrs, Authorization: 'Bearer ' + token }
   }
@@ -21,7 +20,8 @@ const useFetch = (baseUrl, token) => {
 
       console.log('GET ' + baseUrl + url, hdrs)
 
-      fetch(cerberusCtx.apiUrl + baseUrl + url + cerberusCtx.suffix, {
+      // eslint-disable-next-line no-undef
+      fetch(baseUrl + url + cerberusCtx.suffix, {
         method: 'get',
         headers: hdrs
       })
@@ -45,7 +45,8 @@ const useFetch = (baseUrl, token) => {
 
     return new Promise((resolve, reject) => {
       setLoading(true)
-      fetch(cerberusCtx.apiUrl + baseUrl + url + cerberusCtx.suffix, {
+      // eslint-disable-next-line no-undef
+      fetch(baseUrl + url + cerberusCtx.suffix, {
         method: 'post',
         headers: hdrs,
         body: JSON.stringify(body)
@@ -70,7 +71,8 @@ const useFetch = (baseUrl, token) => {
 
     return new Promise((resolve, reject) => {
       setLoading(true)
-      fetch(cerberusCtx.apiUrl + baseUrl + url + cerberusCtx.suffix, {
+      // eslint-disable-next-line no-undef
+      fetch(baseUrl + url + cerberusCtx.suffix, {
         method: 'put',
         headers: hdrs,
         body: JSON.stringify(body)
@@ -95,7 +97,8 @@ const useFetch = (baseUrl, token) => {
 
     return new Promise((resolve, reject) => {
       setLoading(true)
-      fetch(cerberusCtx.apiUrl + baseUrl + url + cerberusCtx.suffix, {
+      // eslint-disable-next-line no-undef
+      fetch(baseUrl + url + cerberusCtx.suffix, {
         method: 'delete',
         headers: hdrs
       })
