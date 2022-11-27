@@ -18,8 +18,8 @@ export default function Permissions(props) {
   const { resourceId, changeAction } = props
   const cerberusCtx = useContext(CerberusContext)
   const { get, post, del, loading } = useFetch(
-    cerberusCtx.cerberusUrl,
-    cerberusCtx.cerberusToken
+    cerberusCtx.apiUrl,
+    cerberusCtx.apiToken
   )
   const [permissions, setPermissions] = useState([])
   const [users, setUsers] = useState([])

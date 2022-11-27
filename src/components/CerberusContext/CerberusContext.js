@@ -5,8 +5,8 @@ import useLocalStorageState from 'use-local-storage-state'
 const CerberusContext = createContext(null)
 
 function CerberusProvider(props) {
-  const { cerberusUrl, socketUrl, suffix = '' } = props
-  const [cerberusToken, setCerberusToken] = useLocalStorageState(
+  const { apiUrl, socketUrl, suffix = '' } = props
+  const [apiToken, setApiToken] = useLocalStorageState(
     `a11n-cerberus-api-token`,
     {
       defaultValue: null
@@ -20,9 +20,9 @@ function CerberusProvider(props) {
 
   const value = {
     suffix: suffix,
-    cerberusUrl: cerberusUrl,
-    cerberusToken: cerberusToken,
-    setCerberusToken: setCerberusToken,
+    apiUrl: apiUrl,
+    apiToken: apiToken,
+    setApiToken: setApiToken,
     sendMessage: sendMessage,
     lastMessage: lastMessage,
     readyState: readyState
