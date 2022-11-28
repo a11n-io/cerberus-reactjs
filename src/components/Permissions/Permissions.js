@@ -15,10 +15,10 @@ import { CerberusContext } from '../CerberusContext'
 import useAccess from '../useAccess'
 
 export default function Permissions(props) {
-  const { resourceId, changeAction } = props
+  const { resourceId, changeAction, onError } = props
   const cerberusCtx = useContext(CerberusContext)
   const { get, post, del, loading } = useFetch(
-    cerberusCtx.apiUrl,
+    cerberusCtx.apiHost + '/api/',
     cerberusCtx.apiToken
   )
   const [permissions, setPermissions] = useState([])
@@ -42,7 +42,12 @@ export default function Permissions(props) {
           setUsers(r)
         }
       })
-      .catch((e) => console.error(e))
+      .catch((e) => {
+        if (onError) {
+          onError(e)
+        }
+        console.error(e)
+      })
 
     get(`roles`)
       .then((r) => {
@@ -50,7 +55,12 @@ export default function Permissions(props) {
           setRoles(r)
         }
       })
-      .catch((e) => console.error(e))
+      .catch((e) => {
+        if (onError) {
+          onError(e)
+        }
+        console.error(e)
+      })
 
     get(`resources/${resourceId}/policies`)
       .then((r) => {
@@ -58,7 +68,12 @@ export default function Permissions(props) {
           setPolicies(r)
         }
       })
-      .catch((e) => console.error(e))
+      .catch((e) => {
+        if (onError) {
+          onError(e)
+        }
+        console.error(e)
+      })
   }, [])
 
   function getPermissions() {
@@ -72,7 +87,12 @@ export default function Permissions(props) {
           }
         }
       })
-      .catch((e) => console.error(e))
+      .catch((e) => {
+        if (onError) {
+          onError(e)
+        }
+        console.error(e)
+      })
   }
 
   function handleInheritToggled(e) {
@@ -82,7 +102,12 @@ export default function Permissions(props) {
       .then(() => {
         getPermissions()
       })
-      .catch((e) => console.error(e))
+      .catch((e) => {
+        if (onError) {
+          onError(e)
+        }
+        console.error(e)
+      })
   }
 
   function handlePolicyRemoveClicked(e) {
@@ -100,7 +125,12 @@ export default function Permissions(props) {
           r
         ])
       })
-      .catch((e) => console.error(e))
+      .catch((e) => {
+        if (onError) {
+          onError(e)
+        }
+        console.error(e)
+      })
   }
 
   function handlePolicySelected(e) {
@@ -123,7 +153,12 @@ export default function Permissions(props) {
           ])
         }
       })
-      .catch((e) => console.error(e))
+      .catch((e) => {
+        if (onError) {
+          onError(e)
+        }
+        console.error(e)
+      })
   }
 
   function handlePermissionRemoveClicked(e) {
@@ -138,7 +173,12 @@ export default function Permissions(props) {
           prev.filter((perm) => perm.id !== permissionId)
         )
       })
-      .catch((e) => console.error(e))
+      .catch((e) => {
+        if (onError) {
+          onError(e)
+        }
+        console.error(e)
+      })
   }
 
   function handlePermissionAddClicked(e) {
@@ -152,7 +192,12 @@ export default function Permissions(props) {
       policyIds: newPolicies.map((p) => p.id)
     })
       .then((r) => setPermissions((prev) => [...prev, r]))
-      .catch((e) => console.error(e))
+      .catch((e) => {
+        if (onError) {
+          onError(e)
+        }
+        console.error(e)
+      })
       .finally(() => {
         setNewPermittee(null)
         setNewPolicies([])

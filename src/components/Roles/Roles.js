@@ -19,13 +19,21 @@ export default function Roles(props) {
   const cerberusCtx = useContext(CerberusContext)
   const [roles, setRoles] = useState([])
   const [selectedRole, setSelectedRole] = useState(null)
-  const { get, loading } = useFetch(cerberusCtx.apiUrl, cerberusCtx.apiToken)
-  const { RoleSelectedComponent, NoRoleSelectedComponent } = props
+  const { get, loading } = useFetch(
+    cerberusCtx.apiHost + '/api/',
+    cerberusCtx.apiToken
+  )
+  const { RoleSelectedComponent, NoRoleSelectedComponent, onError } = props
 
   useEffect(() => {
     get('roles')
       .then((r) => setRoles(r))
-      .catch((e) => console.log(e))
+      .catch((e) => {
+        if (onError) {
+          onError(e)
+        }
+        console.log(e)
+      })
   }, [])
 
   function handleRoleClicked(e) {
@@ -81,13 +89,14 @@ export default function Roles(props) {
                 role={selectedRole}
                 setSelectedRole={setSelectedRole}
                 setRoles={setRoles}
+                onError={onError}
               />
             ) : (
               <React.Fragment>
                 {NoRoleSelectedComponent !== undefined ? (
                   <NoRoleSelectedComponent />
                 ) : (
-                  <NoRoleSelected setRoles={setRoles} />
+                  <NoRoleSelected setRoles={setRoles} onError={onError} />
                 )}
               </React.Fragment>
             )}
@@ -99,7 +108,7 @@ export default function Roles(props) {
 }
 
 function RoleSelected(props) {
-  const { role, setRoles, setSelectedRole } = props
+  const { role, setRoles, setSelectedRole, onError } = props
 
   return (
     <Card>
@@ -107,16 +116,17 @@ function RoleSelected(props) {
         <h2>Role: {role.displayName}</h2>
       </Card.Header>
       <Card.Body>
-        <Tabs defaultActiveKey='details' className='mb-3'>
+        <Tabs defaultActiveKey='users' className='mb-3'>
+          <Tab eventKey='users' title='Users'>
+            <Users role={role} setRoles={setRoles} onError={onError} />
+          </Tab>
           <Tab eventKey='details' title='Details'>
             <Details
               role={role}
               setSelectedRole={setSelectedRole}
               setRoles={setRoles}
+              onError={onError}
             />
-          </Tab>
-          <Tab eventKey='users' title='Users'>
-            <Users role={role} setRoles={setRoles} />
           </Tab>
         </Tabs>
       </Card.Body>
@@ -127,11 +137,11 @@ function RoleSelected(props) {
 function Details(props) {
   const cerberusCtx = useContext(CerberusContext)
   const { put, del, loading } = useFetch(
-    cerberusCtx.apiUrl,
+    cerberusCtx.apiHost + '/api/',
     cerberusCtx.apiToken
   )
   const [name, setName] = useState('')
-  const { role, setRoles, setSelectedRole } = props
+  const { role, setRoles, setSelectedRole, onError } = props
 
   useEffect(() => {
     setName(role.displayName)
@@ -151,7 +161,12 @@ function Details(props) {
           )
         }
       })
-      .catch((e) => console.error(e))
+      .catch((e) => {
+        if (onError) {
+          onError(e)
+        }
+        console.error(e)
+      })
   }
 
   function handleNameChanged(e) {
@@ -168,7 +183,12 @@ function Details(props) {
           })
         }
       })
-      .catch((e) => console.error(e))
+      .catch((e) => {
+        if (onError) {
+          onError(e)
+        }
+        console.error(e)
+      })
   }
 
   if (loading) {
@@ -199,16 +219,21 @@ function Details(props) {
 function Users(props) {
   const cerberusCtx = useContext(CerberusContext)
   const { get, post, del, loading } = useFetch(
-    cerberusCtx.apiUrl,
+    cerberusCtx.apiHost + '/api/',
     cerberusCtx.apiToken
   )
   const [users, setUsers] = useState([])
-  const { role, setRoles } = props
+  const { role, setRoles, onError } = props
 
   useEffect(() => {
     get(`roles/${role.id}/users`)
       .then((r) => setUsers(r))
-      .catch((e) => console.error(e))
+      .catch((e) => {
+        if (onError) {
+          onError(e)
+        }
+        console.error(e)
+      })
   }, [role])
 
   function handleUserRoleToggled(e) {
@@ -237,7 +262,12 @@ function Users(props) {
             })
           )
         })
-        .catch((e) => console.error(e))
+        .catch((e) => {
+          if (onError) {
+            onError(e)
+          }
+          console.error(e)
+        })
     } else {
       del(`roles/${role.id}/users/${selected.id}`)
         .then((d) => {
@@ -259,7 +289,12 @@ function Users(props) {
             })
           )
         })
-        .catch((e) => console.error(e))
+        .catch((e) => {
+          if (onError) {
+            onError(e)
+          }
+          console.error(e)
+        })
     }
   }
 
@@ -293,9 +328,12 @@ function Users(props) {
 
 function NoRoleSelected(props) {
   const cerberusCtx = useContext(CerberusContext)
-  const { post, loading } = useFetch(cerberusCtx.apiUrl, cerberusCtx.apiToken)
+  const { post, loading } = useFetch(
+    cerberusCtx.apiHost + '/api/',
+    cerberusCtx.apiToken
+  )
   const [name, setName] = useState()
-  const { setRoles } = props
+  const { setRoles, onError } = props
 
   function handleNameChanged(e) {
     setName(e.target.value)
@@ -313,7 +351,12 @@ function NoRoleSelected(props) {
           )
         }
       })
-      .catch((e) => console.error(e))
+      .catch((e) => {
+        if (onError) {
+          onError(e)
+        }
+        console.error(e)
+      })
   }
 
   if (loading) {

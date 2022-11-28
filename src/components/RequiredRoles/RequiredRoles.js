@@ -8,7 +8,10 @@ export default function RequiredRoles() {
   const cerberusCtx = useContext(CerberusContext)
   const [resourceTypes, setResourceTypes] = useState([])
   const [selectedRT, setSelectedRT] = useState(null)
-  const { get, loading } = useFetch(cerberusCtx.apiUrl, cerberusCtx.apiToken)
+  const { get, loading } = useFetch(
+    cerberusCtx.apiHost + '/api/',
+    cerberusCtx.apiToken
+  )
 
   useEffect(() => {
     get('resourcetypes')
@@ -84,7 +87,7 @@ function RTSelected(props) {
 function Roles(props) {
   const cerberusCtx = useContext(CerberusContext)
   const { get, post, del, loading } = useFetch(
-    cerberusCtx.apiUrl,
+    cerberusCtx.apiHost + '/api/',
     cerberusCtx.apiToken
   )
   const [roles, setRoles] = useState([])

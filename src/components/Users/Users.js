@@ -19,14 +19,22 @@ export default function Users(props) {
   const cerberusCtx = useContext(CerberusContext)
   const [users, setUsers] = useState([])
   const [selectedUser, setSelectedUser] = useState(null)
-  const { get, loading } = useFetch(cerberusCtx.apiUrl, cerberusCtx.apiToken)
+  const { get, loading } = useFetch(
+    cerberusCtx.apiHost + '/api/',
+    cerberusCtx.apiToken
+  )
 
-  const { UserSelectedComponent, NoUserSelectedComponent } = props
+  const { UserSelectedComponent, NoUserSelectedComponent, onError } = props
 
   useEffect(() => {
     get('users')
       .then((r) => setUsers(r))
-      .catch((e) => console.error(e))
+      .catch((e) => {
+        if (onError) {
+          onError(e)
+        }
+        console.error(e)
+      })
   }, [])
 
   function handleUserClicked(e) {
@@ -82,11 +90,12 @@ export default function Users(props) {
                 user={selectedUser}
                 setSelectedUser={setSelectedUser}
                 setUsers={setUsers}
+                onError={onError}
               />
             ) : (
               <React.Fragment>
                 {NoUserSelectedComponent !== undefined && (
-                  <NoUserSelectedComponent />
+                  <NoUserSelectedComponent onError={onError} />
                 )}
               </React.Fragment>
             )}
@@ -98,7 +107,7 @@ export default function Users(props) {
 }
 
 function UserSelected(props) {
-  const { user, setUsers, setSelectedUser, UserSelectedComponent } = props
+  const { user, setUsers, setSelectedUser, UserSelectedComponent, onError } = props
 
   return (
     <Card>
@@ -106,7 +115,10 @@ function UserSelected(props) {
         <h2>User: {user.displayName}</h2>
       </Card.Header>
       <Card.Body>
-        <Tabs defaultActiveKey='details' className='mb-3'>
+        <Tabs defaultActiveKey='roles' className='mb-3'>
+          <Tab eventKey='roles' title='Roles'>
+            <Roles user={user} setUsers={setUsers} onError={onError} />
+          </Tab>
           <Tab eventKey='details' title='Details'>
             {UserSelectedComponent !== undefined ? (
               <UserSelectedComponent userId={user.id} />
@@ -115,11 +127,9 @@ function UserSelected(props) {
                 user={user}
                 setSelectedUser={setSelectedUser}
                 setUsers={setUsers}
+                onError={onError}
               />
             )}
-          </Tab>
-          <Tab eventKey='roles' title='Roles'>
-            <Roles user={user} setUsers={setUsers} />
           </Tab>
         </Tabs>
       </Card.Body>
@@ -130,12 +140,12 @@ function UserSelected(props) {
 function Details(props) {
   const cerberusCtx = useContext(CerberusContext)
   const { put, del, loading } = useFetch(
-    cerberusCtx.apiUrl,
+    cerberusCtx.apiHost + '/api/',
     cerberusCtx.apiToken
   )
   const [userName, setUserName] = useState('')
   const [displayName, setDisplayName] = useState('')
-  const { user, setUsers, setSelectedUser } = props
+  const { user, setUsers, setSelectedUser, onError } = props
 
   useEffect(() => {
     setUserName(user.userName)
@@ -156,7 +166,12 @@ function Details(props) {
           )
         }
       })
-      .catch((e) => console.error(e))
+      .catch((e) => {
+        if (onError) {
+          onError(e)
+        }
+        console.error(e)
+      })
   }
 
   function handleUserNameChanged(e) {
@@ -177,7 +192,12 @@ function Details(props) {
           })
         }
       })
-      .catch((e) => console.error(e))
+      .catch((e) => {
+        if (onError) {
+          onError(e)
+        }
+        console.error(e)
+      })
   }
 
   if (loading) {
@@ -217,16 +237,21 @@ function Details(props) {
 function Roles(props) {
   const cerberusCtx = useContext(CerberusContext)
   const { get, post, del, loading } = useFetch(
-    cerberusCtx.apiUrl,
+    cerberusCtx.apiHost + '/api/',
     cerberusCtx.apiToken
   )
   const [roles, setRoles] = useState([])
-  const { user, setUsers } = props
+  const { user, setUsers, onError } = props
 
   useEffect(() => {
     get(`users/${user.id}/roles`)
       .then((r) => setRoles(r))
-      .catch((e) => console.error(e))
+      .catch((e) => {
+        if (onError) {
+          onError(e)
+        }
+        console.error(e)
+      })
   }, [user])
 
   function handleRoleUserToggled(e) {
@@ -255,7 +280,12 @@ function Roles(props) {
             })
           )
         })
-        .catch((e) => console.error(e))
+        .catch((e) => {
+          if (onError) {
+            onError(e)
+          }
+          console.error(e)
+        })
     } else {
       del(`roles/${selected.id}/users/${user.id}`)
         .then((d) => {
@@ -276,7 +306,12 @@ function Roles(props) {
             })
           )
         })
-        .catch((e) => console.error(e))
+        .catch((e) => {
+          if (onError) {
+            onError(e)
+          }
+          console.error(e)
+        })
     }
   }
 
