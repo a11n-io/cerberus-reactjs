@@ -1,24 +1,30 @@
-import React, {createContext, useEffect, useState} from 'react'
+import React, { createContext, useEffect, useState } from 'react'
 import useWebSocket from 'react-use-websocket'
-import useLocalStorageState from 'use-local-storage-state'
+import useSessionStorageState from 'use-session-storage-state'
 
 const CerberusContext = createContext(null)
 
 function CerberusProvider(props) {
   const { apiHost = null, socketHost = null, suffix = '' } = props
   const [socketUrl, setSocketUrl] = useState(null)
-  const [apiToken, setApiToken] = useLocalStorageState(
-    `a11n-cerberus-api-token`,
+  const [apiAccessToken, setApiAccessToken] = useSessionStorageState(
+    `a11n-cerberus-api-accesstoken`,
+    {
+      defaultValue: null
+    }
+  )
+  const [apiRefreshToken, setApiRefreshToken] = useSessionStorageState(
+    `a11n-cerberus-api-refreshtoken`,
     {
       defaultValue: null
     }
   )
 
   useEffect(() => {
-    if (socketHost && apiToken) {
-      setSocketUrl(socketHost + '/api/token/' + apiToken)
+    if (socketHost && apiAccessToken) {
+      setSocketUrl(socketHost + '/api/token/' + apiAccessToken)
     }
-  }, [apiToken])
+  }, [apiAccessToken])
 
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl, {
     share: true,
@@ -29,8 +35,10 @@ function CerberusProvider(props) {
   const value = {
     suffix: suffix,
     apiHost: apiHost,
-    apiToken: apiToken,
-    setApiToken: setApiToken,
+    apiAccessToken: apiAccessToken,
+    setApiAccessToken: setApiAccessToken,
+    apiRefreshToken: apiRefreshToken,
+    setApiRefreshToken: setApiRefreshToken,
     sendMessage: sendMessage,
     lastMessage: lastMessage,
     readyState: readyState
