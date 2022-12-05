@@ -22,7 +22,7 @@ const useFetch = (baseUrl, token) => {
 
       // eslint-disable-next-line no-undef
       fetch(baseUrl + url + cerberusCtx.suffix, {
-        credentials: 'include',
+        credentials: 'omit',
         method: 'get',
         headers: hdrs
       })
@@ -48,7 +48,7 @@ const useFetch = (baseUrl, token) => {
       setLoading(true)
       // eslint-disable-next-line no-undef
       fetch(baseUrl + url + cerberusCtx.suffix, {
-        credentials: 'include',
+        credentials: 'omit',
         method: 'post',
         headers: hdrs,
         body: JSON.stringify(body)
@@ -75,7 +75,7 @@ const useFetch = (baseUrl, token) => {
       setLoading(true)
       // eslint-disable-next-line no-undef
       fetch(baseUrl + url + cerberusCtx.suffix, {
-        credentials: 'include',
+        credentials: 'omit',
         method: 'put',
         headers: hdrs,
         body: JSON.stringify(body)
@@ -102,7 +102,7 @@ const useFetch = (baseUrl, token) => {
       setLoading(true)
       // eslint-disable-next-line no-undef
       fetch(baseUrl + url + cerberusCtx.suffix, {
-        credentials: 'include',
+        credentials: 'omit',
         method: 'delete',
         headers: hdrs
       })
