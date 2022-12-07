@@ -1,30 +1,43 @@
 import React, { createContext, useEffect, useState } from 'react'
 import useWebSocket from 'react-use-websocket'
 import useSessionStorageState from 'use-session-storage-state'
+import useFetch from '../../hooks'
 
 const CerberusContext = createContext(null)
 
 function CerberusProvider(props) {
   const { apiHost = null, socketHost = null, suffix = '' } = props
+  const { post } = useFetch(apiHost + '/')
   const [socketUrl, setSocketUrl] = useState(null)
-  const [apiAccessToken, setApiAccessToken] = useSessionStorageState(
-    `a11n-cerberus-api-accesstoken`,
-    {
-      defaultValue: null
-    }
-  )
-  const [apiRefreshToken, setApiRefreshToken] = useSessionStorageState(
-    `a11n-cerberus-api-refreshtoken`,
+  const [apiTokenPair, setApiTokenPair] = useSessionStorageState(
+    `a11n-cerberus-api-tokenpair`,
     {
       defaultValue: null
     }
   )
 
   useEffect(() => {
-    if (socketHost && apiAccessToken) {
-      setSocketUrl(socketHost + '/api/token/' + apiAccessToken)
+    if (socketHost) {
+      if (apiTokenPair && apiTokenPair.accessToken) {
+        setSocketUrl(socketHost + '/api/token/' + apiTokenPair.accessToken)
+      }
+
+      const interval = setInterval(() => refreshToken(), 5000 * 60)
+      return () => clearInterval(interval)
     }
-  }, [apiAccessToken])
+  }, [apiTokenPair])
+
+  const refreshToken = () => {
+    if (apiTokenPair && apiTokenPair.accessToken) {
+      post('auth/refreshtoken', {
+        refreshToken: apiTokenPair.accessToken
+      })
+        .then((r) => {
+          setApiTokenPair(r)
+        })
+        .catch((e) => console.error('refresh token', e.message))
+    }
+  }
 
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl, {
     share: true,
@@ -35,10 +48,8 @@ function CerberusProvider(props) {
   const value = {
     suffix: suffix,
     apiHost: apiHost,
-    apiAccessToken: apiAccessToken,
-    setApiAccessToken: setApiAccessToken,
-    apiRefreshToken: apiRefreshToken,
-    setApiRefreshToken: setApiRefreshToken,
+    apiTokenPair: apiTokenPair,
+    setApiTokenPair: setApiTokenPair,
     sendMessage: sendMessage,
     lastMessage: lastMessage,
     readyState: readyState
