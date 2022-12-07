@@ -20,7 +20,7 @@ const useFetch = (baseUrl, token = null, suffix = '') => {
 
       // eslint-disable-next-line no-undef
       fetch(baseUrl + url + suffix, {
-        credentials: 'omit',
+        credentials: 'include',
         method: 'get',
         headers: hdrs
       })
@@ -46,7 +46,7 @@ const useFetch = (baseUrl, token = null, suffix = '') => {
       setLoading(true)
       // eslint-disable-next-line no-undef
       fetch(baseUrl + url + suffix, {
-        credentials: 'omit',
+        credentials: 'include',
         method: 'post',
         headers: hdrs,
         body: JSON.stringify(body)
@@ -73,7 +73,7 @@ const useFetch = (baseUrl, token = null, suffix = '') => {
       setLoading(true)
       // eslint-disable-next-line no-undef
       fetch(baseUrl + url + suffix, {
-        credentials: 'omit',
+        credentials: 'include',
         method: 'put',
         headers: hdrs,
         body: JSON.stringify(body)
@@ -100,7 +100,7 @@ const useFetch = (baseUrl, token = null, suffix = '') => {
       setLoading(true)
       // eslint-disable-next-line no-undef
       fetch(baseUrl + url + suffix, {
-        credentials: 'omit',
+        credentials: 'include',
         method: 'delete',
         headers: hdrs
       })
