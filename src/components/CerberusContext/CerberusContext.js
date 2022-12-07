@@ -17,18 +17,17 @@ function CerberusProvider(props) {
   )
 
   useEffect(() => {
-    if (socketHost) {
-      if (apiTokenPair && apiTokenPair.accessToken) {
-        setSocketUrl(socketHost + '/api/token/' + apiTokenPair.accessToken)
-      }
-
-      const interval = setInterval(() => refreshToken(), 5000 * 60)
-      return () => clearInterval(interval)
+    if (socketHost && apiTokenPair && apiTokenPair.accessToken) {
+      setSocketUrl(socketHost + '/api/token/' + apiTokenPair.accessToken)
     }
+    const interval = setInterval(() => refreshToken(), 1000 * 60)
+    return () => clearInterval(interval)
   }, [apiTokenPair])
 
   const refreshToken = () => {
+    console.log('refreshToken')
     if (apiTokenPair && apiTokenPair.accessToken) {
+      console.log('refreshing token')
       post('auth/refreshtoken', {
         refreshToken: apiTokenPair.accessToken
       })
