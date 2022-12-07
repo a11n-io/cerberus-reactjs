@@ -7,7 +7,7 @@ const CerberusContext = createContext(null)
 
 function CerberusProvider(props) {
   const { apiHost = null, socketHost = null, suffix = '' } = props
-  const { post } = useFetch(apiHost + '/')
+  const { post } = useFetch(apiHost + '/', null, suffix)
   const [socketUrl, setSocketUrl] = useState(null)
   const [apiTokenPair, setApiTokenPair] = useSessionStorageState(
     `a11n-cerberus-api-tokenpair`,

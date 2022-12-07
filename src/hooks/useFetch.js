@@ -1,9 +1,7 @@
-import { useContext, useState } from 'react'
-import { CerberusContext } from '../components'
+import { useState } from 'react'
 
-const useFetch = (baseUrl, token) => {
+const useFetch = (baseUrl, token = null, suffix = '') => {
   const [loading, setLoading] = useState(false)
-  const cerberusCtx = useContext(CerberusContext)
 
   let hdrs = {
     'Content-Type': 'application/json'
@@ -21,7 +19,7 @@ const useFetch = (baseUrl, token) => {
       console.log('GET ' + baseUrl + url, hdrs)
 
       // eslint-disable-next-line no-undef
-      fetch(baseUrl + url + cerberusCtx.suffix, {
+      fetch(baseUrl + url + suffix, {
         credentials: 'omit',
         method: 'get',
         headers: hdrs
@@ -47,7 +45,7 @@ const useFetch = (baseUrl, token) => {
     return new Promise((resolve, reject) => {
       setLoading(true)
       // eslint-disable-next-line no-undef
-      fetch(baseUrl + url + cerberusCtx.suffix, {
+      fetch(baseUrl + url + suffix, {
         credentials: 'omit',
         method: 'post',
         headers: hdrs,
@@ -74,7 +72,7 @@ const useFetch = (baseUrl, token) => {
     return new Promise((resolve, reject) => {
       setLoading(true)
       // eslint-disable-next-line no-undef
-      fetch(baseUrl + url + cerberusCtx.suffix, {
+      fetch(baseUrl + url + suffix, {
         credentials: 'omit',
         method: 'put',
         headers: hdrs,
@@ -101,7 +99,7 @@ const useFetch = (baseUrl, token) => {
     return new Promise((resolve, reject) => {
       setLoading(true)
       // eslint-disable-next-line no-undef
-      fetch(baseUrl + url + cerberusCtx.suffix, {
+      fetch(baseUrl + url + suffix, {
         credentials: 'omit',
         method: 'delete',
         headers: hdrs
