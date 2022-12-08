@@ -7,7 +7,7 @@ const useFetch = (baseUrl, token = null, suffix = '') => {
     'Content-Type': 'application/json'
   }
   if (token) {
-    hdrs = { ...hdrs, Authorization: 'Bearer ' + token }
+    hdrs = { ...hdrs, CerberusAccessToken: token }
   }
 
   function get(url, headers) {

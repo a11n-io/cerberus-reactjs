@@ -80,7 +80,6 @@ export default function Permissions(props) {
   }, [resourceId])
 
   function getPermissions() {
-    console.log('getPermissions', resourceId)
     get(`resources/${resourceId}/permissions`)
       .then((r) => {
         if (r) {
@@ -242,7 +241,6 @@ export default function Permissions(props) {
           <th>Who</th>
           <th>How</th>
           <th>
-            {resourceId}
             {hasParent && (
               <PrivateSwitch
                 disabled={!canChangePermissions}
