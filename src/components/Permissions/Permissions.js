@@ -75,7 +75,7 @@ export default function Permissions(props) {
         }
         console.error(e)
       })
-  }, [])
+  }, [resourceId])
 
   function getPermissions() {
     get(`resources/${resourceId}/permissions`)
