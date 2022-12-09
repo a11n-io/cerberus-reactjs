@@ -195,7 +195,11 @@ export default function Permissions(props) {
       policyIds: newPolicies.map((p) => p.id)
     })
       .then((r) =>
-        setPermissions((prev) => [...prev.filter((p) => p.id !== r.id), r])
+        setPermissions((prev) =>
+          [...prev.filter((p) => p.id !== r.id), r].sort(
+            (a, b) => a.displayName > b.displayName
+          )
+        )
       )
       .catch((e) => {
         if (onError) {
