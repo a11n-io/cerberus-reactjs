@@ -16,8 +16,6 @@ const useFetch = (baseUrl, token = null, suffix = '') => {
     return new Promise((resolve, reject) => {
       setLoading(true)
 
-      console.log('GET ' + baseUrl + url, hdrs)
-
       // eslint-disable-next-line no-undef
       fetch(baseUrl + url + suffix, {
         credentials: 'omit',

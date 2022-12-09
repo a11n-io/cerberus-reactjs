@@ -194,7 +194,9 @@ export default function Permissions(props) {
       resourceId: resourceId,
       policyIds: newPolicies.map((p) => p.id)
     })
-      .then((r) => setPermissions((prev) => [...prev, r]))
+      .then((r) =>
+        setPermissions((prev) => [...prev.filter((p) => p.id !== r.id), r])
+      )
       .catch((e) => {
         if (onError) {
           onError(e)
