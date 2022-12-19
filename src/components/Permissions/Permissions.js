@@ -17,6 +17,7 @@ import {
 } from 'react-bootstrap'
 import { CerberusContext } from '../CerberusContext'
 import useAccess from '../useAccess'
+import Paginator from "../../uikit/Paginator";
 
 export default function Permissions(props) {
   const { resourceId, changeAction, onError } = props
@@ -413,7 +414,9 @@ const PermitteeSelect = (props) => {
   const ref = useRef(null)
   const [show, setShow] = useState(false)
   const [users, setUsers] = useState([])
+  const [usersTotal, setUsersTotal] = useState(0)
   const [roles, setRoles] = useState([])
+  const [rolesTotal, setRolesTotal] = useState(0)
   const [curPage, setCurPage] = useState(0)
   const [filter, setFilter] = useState('')
   const cerberusCtx = useContext(CerberusContext)
@@ -434,8 +437,10 @@ const PermitteeSelect = (props) => {
       .then((r) => {
         if (r && r.page) {
           setUsers(r.page)
+          setUsersTotal(r.total)
         } else {
           setUsers([])
+          setUsersTotal(0)
         }
       })
       .catch((e) => {
@@ -453,8 +458,10 @@ const PermitteeSelect = (props) => {
       .then((r) => {
         if (r && r.page) {
           setRoles(r.page)
+          setRolesTotal(r.total)
         } else {
           setRoles([])
+          setRolesTotal(0)
         }
       })
       .catch((e) => {
@@ -464,20 +471,6 @@ const PermitteeSelect = (props) => {
         console.error(e)
       })
   }, [curPage, filter])
-
-  function handlePaginationFirst() {
-    setCurPage(0)
-  }
-
-  function handlePaginationPrev() {
-    if (curPage > 0) {
-      setCurPage((prev) => prev - 1)
-    }
-  }
-
-  function handlePaginationNext() {
-    setCurPage((prev) => prev + 1)
-  }
 
   function handleFilterChange(e) {
     setFilter(e.target.value)
@@ -551,17 +544,13 @@ const PermitteeSelect = (props) => {
                 })}
               </tbody>
             </Table>
-            <Pagination>
-              <Pagination.First
-                disabled={curPage === 0}
-                onClick={handlePaginationFirst}
-              />
-              <Pagination.Prev
-                disabled={curPage === 0}
-                onClick={handlePaginationPrev}
-              />
-              <Pagination.Next onClick={handlePaginationNext} />
-            </Pagination>
+            <Paginator
+              curPage={curPage}
+              setCurPage={setCurPage}
+              pageSize={5}
+              pageWindowSize={3}
+              total={rolesTotal + usersTotal}
+            />
           </Popover.Body>
         </Popover>
       </Overlay>
@@ -574,6 +563,7 @@ const PolicySelect = (props) => {
   const ref = useRef(null)
   const [show, setShow] = useState(false)
   const [policies, setPolicies] = useState([])
+  const [policiesTotal, setPoliciesTotal] = useState(0)
   const [curPage, setCurPage] = useState(0)
   const [filter, setFilter] = useState('')
   const cerberusCtx = useContext(CerberusContext)
@@ -595,8 +585,10 @@ const PolicySelect = (props) => {
       .then((r) => {
         if (r && r.page) {
           setPolicies(r.page)
+          setPoliciesTotal(r.total)
         } else {
           setPolicies([])
+          setPoliciesTotal(0)
         }
       })
       .catch((e) => {
@@ -606,20 +598,6 @@ const PolicySelect = (props) => {
         console.error(e)
       })
   }, [resourceId, curPage, filter])
-
-  function handlePaginationFirst() {
-    setCurPage(0)
-  }
-
-  function handlePaginationPrev() {
-    if (curPage > 0) {
-      setCurPage((prev) => prev - 1)
-    }
-  }
-
-  function handlePaginationNext() {
-    setCurPage((prev) => prev + 1)
-  }
 
   function handleFilterChange(e) {
     setFilter(e.target.value)
@@ -685,17 +663,13 @@ const PolicySelect = (props) => {
                 })}
               </tbody>
             </Table>
-            <Pagination>
-              <Pagination.First
-                disabled={curPage === 0}
-                onClick={handlePaginationFirst}
-              />
-              <Pagination.Prev
-                disabled={curPage === 0}
-                onClick={handlePaginationPrev}
-              />
-              <Pagination.Next onClick={handlePaginationNext} />
-            </Pagination>
+            <Paginator
+              curPage={curPage}
+              setCurPage={setCurPage}
+              pageSize={5}
+              pageWindowSize={3}
+              total={policiesTotal}
+            />
           </Popover.Body>
         </Popover>
       </Overlay>
