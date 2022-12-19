@@ -21,7 +21,7 @@ export default function Roles(props) {
   const [selectedRole, setSelectedRole] = useState(null)
   const { get, loading } = useFetch(
     cerberusCtx.apiHost + '/api/',
-    cerberusCtx.apiTokenPair.accessToken,
+    cerberusCtx.apiTokenPair,
     cerberusCtx.suffix
   )
   const { RoleSelectedComponent, NoRoleSelectedComponent, onError } = props
@@ -139,7 +139,7 @@ function Details(props) {
   const cerberusCtx = useContext(CerberusContext)
   const { put, del, loading } = useFetch(
     cerberusCtx.apiHost + '/api/',
-    cerberusCtx.apiTokenPair.accessToken,
+    cerberusCtx.apiTokenPair,
     cerberusCtx.suffix
   )
   const [name, setName] = useState('')
@@ -222,7 +222,7 @@ function Users(props) {
   const cerberusCtx = useContext(CerberusContext)
   const { get, post, del, loading } = useFetch(
     cerberusCtx.apiHost + '/api/',
-    cerberusCtx.apiTokenPair.accessToken,
+    cerberusCtx.apiTokenPair,
     cerberusCtx.suffix
   )
   const [users, setUsers] = useState([])
@@ -333,7 +333,7 @@ function NoRoleSelected(props) {
   const cerberusCtx = useContext(CerberusContext)
   const { post, loading } = useFetch(
     cerberusCtx.apiHost + '/api/',
-    cerberusCtx.apiTokenPair.accessToken,
+    cerberusCtx.apiTokenPair,
     cerberusCtx.suffix
   )
   const [name, setName] = useState()

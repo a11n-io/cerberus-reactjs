@@ -6,7 +6,7 @@ import useFetch from '../../hooks'
 const CerberusContext = createContext(null)
 
 function CerberusProvider(props) {
-  const { apiHost = null, socketHost = null, suffix = '' } = props
+  const { apiHost = '', socketHost = '', suffix = '' } = props
   const { post } = useFetch(apiHost + '/', null, suffix)
   const [socketUrl, setSocketUrl] = useState(null)
   const [apiTokenPair, setApiTokenPair] = useSessionStorageState(
@@ -17,7 +17,7 @@ function CerberusProvider(props) {
   )
 
   useEffect(() => {
-    if (socketHost && apiTokenPair && apiTokenPair.accessToken) {
+    if (socketHost !== '' && apiTokenPair && apiTokenPair.accessToken) {
       setSocketUrl(socketHost + '/api/token/' + apiTokenPair.accessToken)
     }
     const interval = setInterval(() => refreshToken(), 5000 * 60)

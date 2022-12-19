@@ -1,6 +1,6 @@
 {
   "name": "@a11n-io/cerberus-reactjs",
-  "version": "0.1.75",
+  "version": "0.1.76",
   "description": "Cerberus react components",
   "author": "a11n-io",
   "license": "MIT",
@@ -57,8 +57,6 @@
     "dist"
   ],
   "dependencies": {
-    "bootstrap": "^5.2.2",
-    "react-bootstrap": "^2.5.0",
     "react-use-websocket": "^4.2.0",
     "use-local-storage-state": "^18.1.1",
     "use-session-storage-state": "^18.1.0"

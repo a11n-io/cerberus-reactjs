@@ -21,7 +21,7 @@ export default function Users(props) {
   const [selectedUser, setSelectedUser] = useState(null)
   const { get, loading } = useFetch(
     cerberusCtx.apiHost + '/api/',
-    cerberusCtx.apiTokenPair.accessToken,
+    cerberusCtx.apiTokenPair,
     cerberusCtx.suffix
   )
 
@@ -142,7 +142,7 @@ function Details(props) {
   const cerberusCtx = useContext(CerberusContext)
   const { put, del, loading } = useFetch(
     cerberusCtx.apiHost + '/api/',
-    cerberusCtx.apiTokenPair.accessToken,
+    cerberusCtx.apiTokenPair,
     cerberusCtx.suffix
   )
   const [userName, setUserName] = useState('')
@@ -240,7 +240,7 @@ function Roles(props) {
   const cerberusCtx = useContext(CerberusContext)
   const { get, post, del, loading } = useFetch(
     cerberusCtx.apiHost + '/api/',
-    cerberusCtx.apiTokenPair.accessToken,
+    cerberusCtx.apiTokenPair,
     cerberusCtx.suffix
   )
   const [roles, setRoles] = useState([])

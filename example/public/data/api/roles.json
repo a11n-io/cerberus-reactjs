@@ -3,6 +3,7 @@
   "data": [
     {
       "id": "role1",
+      "name": "Role 1",
       "displayName": "Role 1",
       "userCount": 1
     }

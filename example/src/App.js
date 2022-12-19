@@ -6,7 +6,7 @@ import { CerberusProvider, Permissions, Users, Roles } from 'cerberus-reactjs'
 const App = () => {
   return (
     <>
-      <CerberusProvider cerberusUrl='/data/' suffix='.json'>
+      <CerberusProvider apiHost='/data' suffix='.json'>
         <Tabs defaultActiveKey='permissions' className='mb-3'>
           <Tab eventKey='permissions' title='Permissions'>
             <Permissions resourceId='resid' />
