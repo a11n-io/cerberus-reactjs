@@ -28,7 +28,7 @@ export default function Roles(props) {
 
   useEffect(() => {
     get('roles')
-      .then((r) => setRoles(r))
+      .then((r) => setRoles(r.page))
       .catch((e) => {
         if (onError) {
           onError(e)

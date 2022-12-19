@@ -1,9 +1,4 @@
-import React, {
-  useContext,
-  useEffect,
-  useRef,
-  useState
-} from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import './Permissions.css'
 import useFetch from '../../hooks/useFetch'
 import Loader from '../../uikit/Loader'
@@ -40,46 +35,8 @@ export default function Permissions(props) {
   const [activeInherit, setActiveInherit] = useState(false)
   const [hasParent, setHasParent] = useState(false)
   const [canChangePermissions, setCanChangePermissions] = useState(true)
-  const [curPermitteePage, setCurPermitteePage] = useState(0)
-  const [permitteeFilter, setPermitteeFilter] = useState('')
 
   useAccess(resourceId, changeAction, setCanChangePermissions)
-
-  useEffect(() => {
-    get(
-      `users?sort=displayName&order=asc&skip=${
-        curPermitteePage * 5
-      }&limit=5&filter=${permitteeFilter}`
-    )
-      .then((r) => {
-        if (r) {
-          setUsers(r)
-        }
-      })
-      .catch((e) => {
-        if (onError) {
-          onError(e)
-        }
-        console.error(e)
-      })
-
-    get(
-      `roles?sort=displayName&order=asc&skip=${
-        curPermitteePage * 5
-      }&limit=5&filter=${permitteeFilter}`
-    )
-      .then((r) => {
-        if (r) {
-          setRoles(r)
-        }
-      })
-      .catch((e) => {
-        if (onError) {
-          onError(e)
-        }
-        console.error(e)
-      })
-  }, [curPermitteePage, permitteeFilter])
 
   useEffect(() => {
     getPermissions()
@@ -348,103 +305,11 @@ export default function Permissions(props) {
         })}
         <tr>
           <td>
-            <OverlayTrigger
-              trigger='click'
-              placement='bottom'
-              rootClose
-              overlay={
-                <Popover>
-                  <Popover.Header as='h3'>Select a user or role</Popover.Header>
-                  <Popover.Body>
-                    <Table>
-                      <thead>
-                        <tr>
-                          <th>User/Role name</th>
-                          <th>Display name</th>
-                        </tr>
-                        <tr>
-                          <th>
-                            <Form.Control
-                              onChange={handlePermitteeFilterChange}
-                            />
-                          </th>
-                          <th />
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <th>Roles</th>
-                          <th />
-                        </tr>
-                        {roles.map((role) => {
-                          return (
-                            <tr
-                              key={role.id}
-                              onClick={handleNewPermitteeSelected}
-                            >
-                              <td
-                                data-val1={role.id}
-                                data-val2={role.displayName}
-                              >
-                                {role.name}
-                              </td>
-                              <td
-                                data-val1={role.id}
-                                data-val2={role.displayName}
-                              >
-                                {role.displayName}
-                              </td>
-                            </tr>
-                          )
-                        })}
-                        <tr>
-                          <th>Users</th>
-                          <th />
-                        </tr>
-                        {users.map((user) => {
-                          return (
-                            <tr
-                              key={user.id}
-                              onClick={handleNewPermitteeSelected}
-                            >
-                              <td
-                                data-val1={user.id}
-                                data-val2={user.displayName}
-                              >
-                                {user.userName}
-                              </td>
-                              <td
-                                data-val1={user.id}
-                                data-val2={user.displayName}
-                              >
-                                {user.displayName}
-                              </td>
-                            </tr>
-                          )
-                        })}
-                      </tbody>
-                    </Table>
-                    <Pagination>
-                      <Pagination.First
-                        disabled={curPermitteePage === 0}
-                        onClick={handlePermitteePaginationFirst}
-                      />
-                      <Pagination.Prev
-                        disabled={curPermitteePage === 0}
-                        onClick={handlePermitteePaginationPrev}
-                      />
-                      <Pagination.Next
-                        onClick={handlePermitteePaginationNext}
-                      />
-                    </Pagination>
-                  </Popover.Body>
-                </Popover>
-              }
-            >
-              <Button disabled={!canChangePermissions} variant='success'>
-                {newPermitteeName || 'Select User or Role'}
-              </Button>
-            </OverlayTrigger>
+            <PermitteeSelect
+              onError={onError}
+              disabled={!canChangePermissions}
+              onNewPermitteeSelected={handleNewPermitteeSelected}
+            />
           </td>
           <td>
             {newPolicies.map((policy) => {
@@ -543,11 +408,168 @@ function PrivateSwitch(props) {
   )
 }
 
+const PermitteeSelect = (props) => {
+  const [target, setTarget] = useState(null)
+  const ref = useRef(null)
+  const [show, setShow] = useState(false)
+  const [users, setUsers] = useState({ total: 0, page: [] })
+  const [roles, setRoles] = useState({ total: 0, page: [] })
+  const [curPage, setCurPage] = useState(0)
+  const [filter, setFilter] = useState('')
+  const cerberusCtx = useContext(CerberusContext)
+  const { get } = useFetch(
+    cerberusCtx.apiHost + '/api/',
+    cerberusCtx.apiTokenPair,
+    cerberusCtx.suffix
+  )
+
+  const { onError, disabled, onNewPermitteeSelected } = props
+
+  useEffect(() => {
+    get(
+      `users?sort=displayName&order=asc&skip=${
+        curPage * 5
+      }&limit=5&filter=${filter}`
+    )
+      .then((r) => {
+        if (r) {
+          setUsers(r)
+        }
+      })
+      .catch((e) => {
+        if (onError) {
+          onError(e)
+        }
+        console.error(e)
+      })
+
+    get(
+      `roles?sort=displayName&order=asc&skip=${
+        curPage * 5
+      }&limit=5&filter=${filter}`
+    )
+      .then((r) => {
+        if (r) {
+          setRoles(r)
+        }
+      })
+      .catch((e) => {
+        if (onError) {
+          onError(e)
+        }
+        console.error(e)
+      })
+  }, [curPage, filter])
+
+  function handlePaginationFirst() {
+    setCurPage(0)
+  }
+
+  function handlePaginationPrev() {
+    if (curPage > 0) {
+      setCurPage((prev) => prev - 1)
+    }
+  }
+
+  function handlePaginationNext() {
+    setCurPage((prev) => prev + 1)
+  }
+
+  function handleFilterChange(e) {
+    setFilter(e.target.value)
+  }
+
+  const handleClick = (event) => {
+    setShow(!show)
+    setTarget(event.target)
+  }
+
+  return (
+    <div ref={ref}>
+      <Button disabled={disabled} variant='success' onClick={handleClick}>
+        Select User or Role
+      </Button>
+
+      <Overlay
+        rootClose
+        show={show}
+        target={target}
+        placement='bottom'
+        container={ref}
+        containerPadding={20}
+        onHide={(e) => setShow(false)}
+      >
+        <Popover>
+          <Popover.Header as='h3'>Select a user or role</Popover.Header>
+          <Popover.Body>
+            <Table>
+              <thead>
+                <tr>
+                  <th>User/Role name</th>
+                  <th>Display name</th>
+                </tr>
+                <tr>
+                  <th colSpan="2">
+                    <Form.Control onChange={handleFilterChange} placeholder="filter"/>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th colSpan="2">Roles</th>
+                </tr>
+                {roles.page.map((role) => {
+                  return (
+                    <tr key={role.id} onClick={onNewPermitteeSelected}>
+                      <td data-val1={role.id} data-val2={role.displayName}>
+                        {role.name}
+                      </td>
+                      <td data-val1={role.id} data-val2={role.displayName}>
+                        {role.displayName}
+                      </td>
+                    </tr>
+                  )
+                })}
+                <tr>
+                  <th colSpan='2'>Users</th>
+                </tr>
+                {users.page.map((user) => {
+                  return (
+                    <tr key={user.id} onClick={onNewPermitteeSelected}>
+                      <td data-val1={user.id} data-val2={user.displayName}>
+                        {user.userName}
+                      </td>
+                      <td data-val1={user.id} data-val2={user.displayName}>
+                        {user.displayName}
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </Table>
+            <Pagination>
+              <Pagination.First
+                disabled={curPage === 0}
+                onClick={handlePaginationFirst}
+              />
+              <Pagination.Prev
+                disabled={curPage === 0}
+                onClick={handlePaginationPrev}
+              />
+              <Pagination.Next onClick={handlePaginationNext} />
+            </Pagination>
+          </Popover.Body>
+        </Popover>
+      </Overlay>
+    </div>
+  )
+}
+
 const PolicySelect = (props) => {
   const [target, setTarget] = useState(null)
   const ref = useRef(null)
   const [show, setShow] = useState(false)
-  const [policies, setPolicies] = useState([])
+  const [policies, setPolicies] = useState({ total: 0, page: [] })
   const [curPage, setCurPage] = useState(0)
   const [filter, setFilter] = useState('')
   const cerberusCtx = useContext(CerberusContext)
@@ -627,14 +649,13 @@ const PolicySelect = (props) => {
                   <th>Description</th>
                 </tr>
                 <tr>
-                  <th>
-                    <Form.Control onChange={handleFilterChange} />
+                  <th colSpan="2">
+                    <Form.Control onChange={handleFilterChange} placeholder="filter"/>
                   </th>
-                  <th />
                 </tr>
               </thead>
               <tbody>
-                {policies.map((policy) => {
+                {policies.page.map((policy) => {
                   return (
                     <tr key={policy.id} onClick={onNewPolicySelected}>
                       <td

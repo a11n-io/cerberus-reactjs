@@ -29,7 +29,7 @@ export default function Users(props) {
 
   useEffect(() => {
     get('users')
-      .then((r) => setUsers(r))
+      .then((r) => setUsers(r.page))
       .catch((e) => {
         if (onError) {
           onError(e)
