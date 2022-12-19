@@ -412,8 +412,8 @@ const PermitteeSelect = (props) => {
   const [target, setTarget] = useState(null)
   const ref = useRef(null)
   const [show, setShow] = useState(false)
-  const [users, setUsers] = useState({ total: 0, page: [] })
-  const [roles, setRoles] = useState({ total: 0, page: [] })
+  const [users, setUsers] = useState([])
+  const [roles, setRoles] = useState([])
   const [curPage, setCurPage] = useState(0)
   const [filter, setFilter] = useState('')
   const cerberusCtx = useContext(CerberusContext)
@@ -432,8 +432,10 @@ const PermitteeSelect = (props) => {
       }&limit=5&filter=${filter}`
     )
       .then((r) => {
-        if (r) {
-          setUsers(r)
+        if (r && r.page) {
+          setUsers(r.page)
+        } else {
+          setUsers([])
         }
       })
       .catch((e) => {
@@ -449,8 +451,10 @@ const PermitteeSelect = (props) => {
       }&limit=5&filter=${filter}`
     )
       .then((r) => {
-        if (r) {
-          setRoles(r)
+        if (r && r.page) {
+          setRoles(r.page)
+        } else {
+          setRoles([])
         }
       })
       .catch((e) => {
@@ -518,7 +522,7 @@ const PermitteeSelect = (props) => {
                 <tr>
                   <th colSpan="2">Roles</th>
                 </tr>
-                {roles.page.map((role) => {
+                {roles.map((role) => {
                   return (
                     <tr key={role.id} onClick={onNewPermitteeSelected}>
                       <td data-val1={role.id} data-val2={role.displayName}>
@@ -533,7 +537,7 @@ const PermitteeSelect = (props) => {
                 <tr>
                   <th colSpan='2'>Users</th>
                 </tr>
-                {users.page.map((user) => {
+                {users.map((user) => {
                   return (
                     <tr key={user.id} onClick={onNewPermitteeSelected}>
                       <td data-val1={user.id} data-val2={user.displayName}>
@@ -569,7 +573,7 @@ const PolicySelect = (props) => {
   const [target, setTarget] = useState(null)
   const ref = useRef(null)
   const [show, setShow] = useState(false)
-  const [policies, setPolicies] = useState({ total: 0, page: [] })
+  const [policies, setPolicies] = useState([])
   const [curPage, setCurPage] = useState(0)
   const [filter, setFilter] = useState('')
   const cerberusCtx = useContext(CerberusContext)
@@ -589,8 +593,10 @@ const PolicySelect = (props) => {
       }&limit=5&filter=${filter}`
     )
       .then((r) => {
-        if (r) {
-          setPolicies(r)
+        if (r && r.page) {
+          setPolicies(r.page)
+        } else {
+          setPolicies([])
         }
       })
       .catch((e) => {
@@ -655,7 +661,7 @@ const PolicySelect = (props) => {
                 </tr>
               </thead>
               <tbody>
-                {policies.page.map((policy) => {
+                {policies.map((policy) => {
                   return (
                     <tr key={policy.id} onClick={onNewPolicySelected}>
                       <td
