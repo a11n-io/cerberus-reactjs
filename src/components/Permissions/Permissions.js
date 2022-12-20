@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import './Permissions.css'
+import styles from './Permissions.module.css'
 import useFetch from '../../hooks/useFetch'
 import Loader from '../../uikit/Loader'
 import {
@@ -11,13 +11,11 @@ import {
   Table,
   Toast,
   Popover,
-  OverlayTrigger,
-  Pagination,
   Overlay
 } from 'react-bootstrap'
 import { CerberusContext } from '../CerberusContext'
 import useAccess from '../useAccess'
-import Paginator from "../../uikit/Paginator";
+import Paginator from '../../uikit/Paginator'
 
 export default function Permissions(props) {
   const { resourceId, changeAction, onError } = props
@@ -476,7 +474,7 @@ const PermitteeSelect = (props) => {
         containerPadding={20}
         onHide={(e) => setShow(false)}
       >
-        <Popover>
+        <Popover className={styles.permission_popover}>
           <Popover.Header as='h3'>Select a user or role</Popover.Header>
           <Popover.Body>
             <Table>
@@ -603,7 +601,7 @@ const PolicySelect = (props) => {
         containerPadding={20}
         onHide={(e) => setShow(false)}
       >
-        <Popover>
+        <Popover className={styles.permission_popover}>
           <Popover.Header as='h3'>Select a policy</Popover.Header>
           <Popover.Body>
             <Table>

@@ -1,6 +1,5 @@
 import { Pagination } from 'react-bootstrap'
 import React from 'react'
-import './Paginator.css'
 
 export default function Paginator(props) {
   const { curPage, setCurPage, pageSize, pageWindowSize, total } = props
