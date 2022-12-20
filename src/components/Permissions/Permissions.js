@@ -646,7 +646,7 @@ const PolicySelect = (props) => {
             <Paginator
               curPage={curPage}
               setCurPage={setCurPage}
-              pageSize={1}
+              pageSize={5}
               pageWindowSize={3}
               total={policiesTotal}
             />
