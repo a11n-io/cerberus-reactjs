@@ -28,8 +28,6 @@ export default function Permissions(props) {
     cerberusCtx.suffix
   )
   const [permissions, setPermissions] = useState([])
-  const [users, setUsers] = useState([])
-  const [roles, setRoles] = useState([])
   const [newPermittee, setNewPermittee] = useState()
   const [newPermitteeName, setNewPermitteeName] = useState()
   const [newPolicies, setNewPolicies] = useState([])
@@ -185,28 +183,9 @@ export default function Permissions(props) {
       })
   }
 
-  function handlePermitteePaginationFirst() {
-    setCurPermitteePage(0)
-  }
-
-  function handlePermitteePaginationPrev() {
-    if (curPermitteePage > 0) {
-      setCurPermitteePage((prev) => prev - 1)
-    }
-  }
-
-  function handlePermitteePaginationNext() {
-    setCurPermitteePage((prev) => prev + 1)
-  }
-
-  function handlePermitteeFilterChange(e) {
-    setPermitteeFilter(e.target.value)
-  }
-
   function handleNewPermitteeSelected(e) {
     const permitteeId = e.target.getAttribute('data-val1')
     const permitteeName = e.target.getAttribute('data-val2')
-
     setNewPermittee(permitteeId)
     setNewPermitteeName(permitteeName)
   }
@@ -307,6 +286,7 @@ export default function Permissions(props) {
         <tr>
           <td>
             <PermitteeSelect
+              permitteeName={newPermitteeName}
               onError={onError}
               disabled={!canChangePermissions}
               onNewPermitteeSelected={handleNewPermitteeSelected}
@@ -426,7 +406,7 @@ const PermitteeSelect = (props) => {
     cerberusCtx.suffix
   )
 
-  const { onError, disabled, onNewPermitteeSelected } = props
+  const { permitteeName, onError, disabled, onNewPermitteeSelected } = props
 
   useEffect(() => {
     get(
@@ -484,7 +464,7 @@ const PermitteeSelect = (props) => {
   return (
     <div ref={ref}>
       <Button disabled={disabled} variant='success' onClick={handleClick}>
-        Select User or Role
+        {permitteeName || 'Select User or Role'}
       </Button>
 
       <Overlay
@@ -666,7 +646,7 @@ const PolicySelect = (props) => {
             <Paginator
               curPage={curPage}
               setCurPage={setCurPage}
-              pageSize={5}
+              pageSize={1}
               pageWindowSize={3}
               total={policiesTotal}
             />

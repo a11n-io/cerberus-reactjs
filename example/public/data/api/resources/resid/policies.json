@@ -1,20 +1,68 @@
 {
   "code": 200,
-  "data": [
-    {
-      "id": "policy1",
-      "name": "Policy 1",
-      "description": "Policy 1 description"
-    },
-    {
-      "id": "policy2",
-      "name": "Policy 2",
-      "description": "Policy 2 description"
-    },
-    {
-      "id": "policy3",
-      "name": "Policy 3",
-      "description": "Policy 3 description"
-    }
-  ]
+  "data": {
+    "total": 12,
+    "page": [
+      {
+        "id": "policy1",
+        "name": "Policy 1",
+        "description": "Policy 1 description"
+      },
+      {
+        "id": "policy2",
+        "name": "Policy 2",
+        "description": "Policy 2 description"
+      },
+      {
+        "id": "policy3",
+        "name": "Policy 3",
+        "description": "Policy 3 description"
+      },
+      {
+        "id": "policy4",
+        "name": "Policy 1",
+        "description": "Policy 1 description"
+      },
+      {
+        "id": "policy5",
+        "name": "Policy 2",
+        "description": "Policy 2 description"
+      },
+      {
+        "id": "policy6",
+        "name": "Policy 3",
+        "description": "Policy 3 description"
+      },
+      {
+        "id": "policy7",
+        "name": "Policy 1",
+        "description": "Policy 1 description"
+      },
+      {
+        "id": "policy8",
+        "name": "Policy 2",
+        "description": "Policy 2 description"
+      },
+      {
+        "id": "policy9",
+        "name": "Policy 3",
+        "description": "Policy 3 description"
+      },
+      {
+        "id": "policy10",
+        "name": "Policy 1",
+        "description": "Policy 1 description"
+      },
+      {
+        "id": "policy11",
+        "name": "Policy 2",
+        "description": "Policy 2 description"
+      },
+      {
+        "id": "policy12",
+        "name": "Policy 3",
+        "description": "Policy 3 description"
+      }
+    ]
+  }
 }

@@ -1,11 +1,14 @@
 {
   "code": 200,
-  "data": [
-    {
-      "id": "role1",
-      "name": "Role 1",
-      "displayName": "Role 1",
-      "userCount": 1
-    }
-  ]
+  "data": {
+    "total": 1,
+    "page": [
+      {
+        "id": "role1",
+        "name": "Role 1",
+        "displayName": "Role 1",
+        "userCount": 1
+      }
+    ]
+  }
 }
