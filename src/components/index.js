@@ -1,3 +1,4 @@
+export { default as Paginator } from './Paginator'
 export { default as Permissions } from './Permissions'
 export { default as AccessGuard } from './AccessGuard'
 export { default as useAccess } from './useAccess'

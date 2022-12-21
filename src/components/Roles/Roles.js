@@ -14,7 +14,7 @@ import {
 } from 'react-bootstrap'
 import { Loader } from '../../uikit'
 import { CerberusContext } from '../CerberusContext'
-import Paginator from '../../uikit/Paginator'
+import Paginator from '../Paginator'
 
 export default function Roles(props) {
   const cerberusCtx = useContext(CerberusContext)

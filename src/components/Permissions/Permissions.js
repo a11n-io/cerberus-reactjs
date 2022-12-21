@@ -15,7 +15,7 @@ import {
 } from 'react-bootstrap'
 import { CerberusContext } from '../CerberusContext'
 import useAccess from '../useAccess'
-import Paginator from '../../uikit/Paginator'
+import Paginator from '../Paginator'
 
 export default function Permissions(props) {
   const { resourceId, changeAction, onError } = props
