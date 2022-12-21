@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import useFetch from '../../hooks'
 import {
   ListGroup,
@@ -14,11 +14,16 @@ import {
 } from 'react-bootstrap'
 import { Loader } from '../../uikit'
 import { CerberusContext } from '../CerberusContext'
+import Paginator from '../../uikit/Paginator'
 
 export default function Users(props) {
   const cerberusCtx = useContext(CerberusContext)
   const [users, setUsers] = useState([])
+  const [total, setTotal] = useState(0)
+  const [curPage, setCurPage] = useState(0)
+  const [filter, setFilter] = useState('')
   const [selectedUser, setSelectedUser] = useState(null)
+  const inputRef = useRef(null)
   const { get, loading } = useFetch(
     cerberusCtx.apiHost + '/api/',
     cerberusCtx.apiTokenPair,
@@ -28,15 +33,27 @@ export default function Users(props) {
   const { UserSelectedComponent, NoUserSelectedComponent, onError } = props
 
   useEffect(() => {
-    get('users')
-      .then((r) => setUsers(r.page))
+    get(`users?sort=displayName&order=asc&skip=${curPage * 10}&limit=10&filter=${filter}`)
+      .then((r) => {
+        if (r && r.page) {
+          setUsers(r.page)
+          setTotal(r.total)
+        } else {
+          setUsers([])
+          setTotal(0)
+        }
+      })
       .catch((e) => {
         if (onError) {
           onError(e)
         }
         console.error(e)
       })
-  }, [])
+  }, [curPage, filter])
+
+  useEffect(() => {
+    inputRef.current.focus()
+  }, [users])
 
   function handleUserClicked(e) {
     const userId = e.target.getAttribute('data-val1')
@@ -51,6 +68,10 @@ export default function Users(props) {
     setSelectedUser(users.find((u) => u.id === userId))
   }
 
+  function handleFilterChange(e) {
+    setFilter(e.target.value)
+  }
+
   if (loading) {
     return <Loader />
   }
@@ -60,7 +81,14 @@ export default function Users(props) {
       <Container>
         <Row>
           <Col>
-            <ListGroup>
+            <Form.Control
+              ref={inputRef}
+              onChange={handleFilterChange}
+              placeholder='filter'
+              value={filter}
+              className='m-1'
+            />
+            <ListGroup className='m-1'>
               {users.map((user) => {
                 return (
                   <ListGroup.Item
@@ -83,6 +111,13 @@ export default function Users(props) {
                 )
               })}
             </ListGroup>
+            <Paginator
+              curPage={curPage}
+              setCurPage={setCurPage}
+              pageSize={10}
+              pageWindowSize={5}
+              total={total}
+            />
           </Col>
           <Col>
             {selectedUser ? (

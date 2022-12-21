@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, {useContext, useEffect, useRef, useState} from 'react'
 import useFetch from '../../hooks'
 import {
   ListGroup,
@@ -14,11 +14,16 @@ import {
 } from 'react-bootstrap'
 import { Loader } from '../../uikit'
 import { CerberusContext } from '../CerberusContext'
+import Paginator from '../../uikit/Paginator'
 
 export default function Roles(props) {
   const cerberusCtx = useContext(CerberusContext)
   const [roles, setRoles] = useState([])
+  const [total, setTotal] = useState(0)
+  const [curPage, setCurPage] = useState(0)
+  const [filter, setFilter] = useState('')
   const [selectedRole, setSelectedRole] = useState(null)
+  const inputRef = useRef(null)
   const { get, loading } = useFetch(
     cerberusCtx.apiHost + '/api/',
     cerberusCtx.apiTokenPair,
@@ -27,15 +32,27 @@ export default function Roles(props) {
   const { RoleSelectedComponent, NoRoleSelectedComponent, onError } = props
 
   useEffect(() => {
-    get('roles')
-      .then((r) => setRoles(r.page))
+    get(`roles?sort=displayName&order=asc&skip=${curPage * 10}&limit=10&filter=${filter}`)
+      .then((r) => {
+        if (r && r.page) {
+          setRoles(r.page)
+          setTotal(r.total)
+        } else {
+          setRoles([])
+          setTotal(0)
+        }
+      })
       .catch((e) => {
         if (onError) {
           onError(e)
         }
         console.log(e)
       })
-  }, [])
+  }, [curPage, filter])
+
+  useEffect(() => {
+    inputRef.current.focus()
+  }, [roles])
 
   function handleRoleClicked(e) {
     const roleId = e.target.getAttribute('data-val1')
@@ -50,6 +67,10 @@ export default function Roles(props) {
     setSelectedRole(roles.find((r) => r.id === roleId))
   }
 
+  function handleFilterChange(e) {
+    setFilter(e.target.value)
+  }
+
   if (loading) {
     return <Loader />
   }
@@ -59,7 +80,14 @@ export default function Roles(props) {
       <Container>
         <Row>
           <Col>
-            <ListGroup>
+            <Form.Control
+              ref={inputRef}
+              onChange={handleFilterChange}
+              placeholder='filter'
+              value={filter}
+              className='m-1'
+            />
+            <ListGroup className='m-1'>
               {roles.map((role) => {
                 return (
                   <ListGroup.Item
@@ -82,6 +110,13 @@ export default function Roles(props) {
                 )
               })}
             </ListGroup>
+            <Paginator
+              curPage={curPage}
+              setCurPage={setCurPage}
+              pageSize={10}
+              pageWindowSize={5}
+              total={total}
+            />
           </Col>
           <Col>
             {selectedRole ? (

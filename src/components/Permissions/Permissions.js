@@ -336,39 +336,41 @@ function PolicyCard(props) {
   const deleteDisabled = disabled || (permission ? permission.inherited : false)
   const permissionId = permission ? permission.id : ''
 
+  function handleCollapseToggled(e) {
+    // const id = e.target.getAttribute('id')
+
+    e.target.classList.toggle(styles.active)
+    const content = e.target.nextElementSibling
+    if (content.style.maxHeight) {
+      content.style.maxHeight = null
+    } else {
+      content.style.maxHeight = content.scrollHeight + 'px'
+    }
+  }
+
   return (
-    <Toast className='d-inline-block m-1'>
-      <Toast.Header closeButton={false}>
-        <strong className='me-auto'>{policy.name}</strong>
-        <Button
-          data-bs-toggle='collapse'
-          data-bs-target={`#a${collapseId}`}
-          aria-expanded='false'
-          aria-controls={`a${collapseId}`}
-          variant='outline'
-          size='sm'
-        >
-          &#x21F2;
-        </Button>
-      </Toast.Header>
-      <Toast.Body className='collapse' id={`a${collapseId}`}>
-        <Container>
-          <Row>
-            <Col sm={10}>{policy.description}</Col>
-            <Col sm={2}>
-              <Button
-                disabled={deleteDisabled}
-                data-val1={permissionId}
-                data-val2={policy.id}
-                onClick={onDeleteClicked}
-                variant='outline-danger'
-                size='sm'
-              >
-                x
-              </Button>
-            </Col>
-          </Row>
-        </Container>
+    <Toast className='d-inline-block'>
+      <Toast.Body>
+        <button className={styles.collapsible} onClick={handleCollapseToggled}>{policy.name}</button>
+        <div className={styles.content}>
+          <Container>
+            <Row>
+              <Col sm={10}>{policy.description}</Col>
+              <Col sm={2}>
+                <Button
+                  disabled={deleteDisabled}
+                  data-val1={permissionId}
+                  data-val2={policy.id}
+                  onClick={onDeleteClicked}
+                  variant='outline-danger'
+                  size='sm'
+                >
+                  x
+                </Button>
+              </Col>
+            </Row>
+          </Container>
+        </div>
       </Toast.Body>
     </Toast>
   )
@@ -405,6 +407,12 @@ const PermitteeSelect = (props) => {
   )
 
   const { permitteeName, onError, disabled, onNewPermitteeSelected } = props
+
+  // empty so the popover stays the same size
+  const emptyPermittees = []
+  for (let i = 0; i < 10 - roles.length + users.length; i++) {
+    emptyPermittees.push({ id: 'empty' + i })
+  }
 
   useEffect(() => {
     get(
@@ -477,21 +485,21 @@ const PermitteeSelect = (props) => {
         <Popover className={styles.permission_popover}>
           <Popover.Header as='h3'>Select a user or role</Popover.Header>
           <Popover.Body>
-            <Table>
+            <Table borderless hover size='sm'>
               <thead>
                 <tr>
                   <th>User/Role name</th>
                   <th>Display name</th>
                 </tr>
                 <tr>
-                  <th colSpan="2">
-                    <Form.Control onChange={handleFilterChange} placeholder="filter"/>
+                  <th colSpan='2'>
+                    <Form.Control onChange={handleFilterChange} placeholder='filter'/>
                   </th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <th colSpan="2">Roles</th>
+                  <th colSpan='2'>Roles</th>
                 </tr>
                 {roles.map((role) => {
                   return (
@@ -517,6 +525,14 @@ const PermitteeSelect = (props) => {
                       <td data-val1={user.id} data-val2={user.displayName}>
                         {user.displayName}
                       </td>
+                    </tr>
+                  )
+                })}
+                {emptyPermittees.map((permittee) => {
+                  return (
+                    <tr key={permittee.id}>
+                      <td>&nbsp;</td>
+                      <td />
                     </tr>
                   )
                 })}
@@ -554,11 +570,17 @@ const PolicySelect = (props) => {
   const { resourceId, permissionId, onError, disabled, onNewPolicySelected } =
     props
 
+  // empty so the popover stays the same size
+  const emptyPolicies = []
+  for (let i = 0; i < 10 - policies.length; i++) {
+    emptyPolicies.push({ id: 'empty' + i })
+  }
+
   useEffect(() => {
     get(
       `resources/${resourceId}/policies?sort=name&order=asc&skip=${
-        curPage * 5
-      }&limit=5&filter=${filter}`
+        curPage * 10
+      }&limit=10&filter=${filter}`
     )
       .then((r) => {
         if (r && r.page) {
@@ -604,15 +626,15 @@ const PolicySelect = (props) => {
         <Popover className={styles.permission_popover}>
           <Popover.Header as='h3'>Select a policy</Popover.Header>
           <Popover.Body>
-            <Table>
+            <Table borderless hover size='sm'>
               <thead>
                 <tr>
                   <th>Policy name</th>
                   <th>Description</th>
                 </tr>
                 <tr>
-                  <th colSpan="2">
-                    <Form.Control onChange={handleFilterChange} placeholder="filter"/>
+                  <th colSpan='2'>
+                    <Form.Control onChange={handleFilterChange} placeholder='filter'/>
                   </th>
                 </tr>
               </thead>
@@ -639,12 +661,20 @@ const PolicySelect = (props) => {
                     </tr>
                   )
                 })}
+                {emptyPolicies.map((policy) => {
+                  return (
+                    <tr key={policy.id}>
+                      <td>&nbsp;</td>
+                      <td />
+                    </tr>
+                  )
+                })}
               </tbody>
             </Table>
             <Paginator
               curPage={curPage}
               setCurPage={setCurPage}
-              pageSize={5}
+              pageSize={10}
               pageWindowSize={3}
               total={policiesTotal}
             />
