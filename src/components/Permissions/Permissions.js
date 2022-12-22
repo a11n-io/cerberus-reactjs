@@ -16,6 +16,7 @@ import {
 import { CerberusContext } from '../CerberusContext'
 import useAccess from '../useAccess'
 import Paginator from '../Paginator'
+import Confirmation from '../Confirmation'
 
 export default function Permissions(props) {
   const { resourceId, changeAction, onError } = props
@@ -32,6 +33,7 @@ export default function Permissions(props) {
   const [activeInherit, setActiveInherit] = useState(false)
   const [hasParent, setHasParent] = useState(false)
   const [canChangePermissions, setCanChangePermissions] = useState(true)
+  const [deletingPermission, setDeletingPermission] = useState('')
 
   useAccess(resourceId, changeAction, setCanChangePermissions)
 
@@ -138,11 +140,20 @@ export default function Permissions(props) {
       return
     }
 
-    del(`permissions/${permissionId}`)
+    setDeletingPermission(permissionId)
+  }
+
+  function handleDenyDelete() {
+    setDeletingPermission('')
+  }
+
+  function handleConfirmDelete() {
+    del(`permissions/${deletingPermission}`)
       .then((r) => {
         setPermissions((prev) =>
-          prev.filter((perm) => perm.id !== permissionId)
+          prev.filter((perm) => perm.id !== deletingPermission)
         )
+        setDeletingPermission('')
       })
       .catch((e) => {
         if (onError) {
@@ -218,114 +229,123 @@ export default function Permissions(props) {
   }
 
   return (
-    <Table striped className='cerberus-permissions'>
-      <thead>
-        <tr>
-          <th>Who</th>
-          <th>How</th>
-          <th>
-            {hasParent && (
-              <PrivateSwitch
-                disabled={!canChangePermissions}
-                activeInherit={activeInherit}
-                onInheritToggled={handleInheritToggled}
-              />
-            )}
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        {permissions.map((permission) => {
-          return (
-            <tr key={permission.id}>
-              <td>
-                {permission.permittee.displayName}
-                {permission.inherited && (
-                  <p>
-                    <small>(shared)</small>
-                  </p>
-                )}
-              </td>
-              <td>
-                {permission.policies.map((policy) => {
-                  return (
-                    <PolicyCard
-                      disabled={!canChangePermissions}
-                      key={policy.id}
-                      permission={permission}
-                      policy={policy}
-                      onDeleteClicked={handlePolicyRemoveClicked}
-                    />
-                  )
-                })}
-                <span>
-                  <PolicySelect
-                    resourceId={resourceId}
-                    permissionId={permission.id}
-                    onError={onError}
-                    disabled={!canChangePermissions || permission.inherited}
-                    onNewPolicySelected={handlePolicySelected}
-                  />
-                </span>
-              </td>
-              <td>
-                <Button
-                  disabled={!canChangePermissions || permission.inherited}
-                  variant='danger'
-                  onClick={handlePermissionRemoveClicked}
-                  data-val1={permission.id}
-                >
-                  Remove
-                </Button>
-              </td>
-            </tr>
-          )
-        })}
-        <tr>
-          <td>
-            <PermitteeSelect
-              permitteeName={newPermitteeName}
-              onError={onError}
-              disabled={!canChangePermissions}
-              onNewPermitteeSelected={handleNewPermitteeSelected}
-            />
-          </td>
-          <td>
-            {newPolicies.map((policy) => {
-              return (
-                <PolicyCard
-                  key={policy.id}
-                  policy={policy}
-                  onDeleteClicked={handleNewPolicyRemoveClicked}
+    <React.Fragment>
+      <Confirmation
+        onConfirm={handleConfirmDelete}
+        onDeny={handleDenyDelete}
+        show={deletingPermission !== ''}
+        header='Delete Permission'
+        body='This cannot be undone. Delete?'
+      />
+      <Table striped className='cerberus-permissions'>
+        <thead>
+          <tr>
+            <th>Who</th>
+            <th>How</th>
+            <th>
+              {hasParent && (
+                <PrivateSwitch
+                  disabled={!canChangePermissions}
+                  activeInherit={activeInherit}
+                  onInheritToggled={handleInheritToggled}
                 />
-              )
-            })}
-            <span>
-              <PolicySelect
-                resourceId={resourceId}
-                permissionId=''
+              )}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {permissions.map((permission) => {
+            return (
+              <tr key={permission.id}>
+                <td>
+                  {permission.permittee.displayName}
+                  {permission.inherited && (
+                    <p>
+                      <small>(shared)</small>
+                    </p>
+                  )}
+                </td>
+                <td>
+                  {permission.policies.map((policy) => {
+                    return (
+                      <PolicyCard
+                        disabled={!canChangePermissions}
+                        key={policy.id}
+                        permission={permission}
+                        policy={policy}
+                        onDeleteClicked={handlePolicyRemoveClicked}
+                      />
+                    )
+                  })}
+                  <span>
+                    <PolicySelect
+                      resourceId={resourceId}
+                      permissionId={permission.id}
+                      onError={onError}
+                      disabled={!canChangePermissions || permission.inherited}
+                      onNewPolicySelected={handlePolicySelected}
+                    />
+                  </span>
+                </td>
+                <td>
+                  <Button
+                    disabled={!canChangePermissions || permission.inherited}
+                    variant='danger'
+                    onClick={handlePermissionRemoveClicked}
+                    data-val1={permission.id}
+                  >
+                    Remove
+                  </Button>
+                </td>
+              </tr>
+            )
+          })}
+          <tr>
+            <td>
+              <PermitteeSelect
+                permitteeName={newPermitteeName}
                 onError={onError}
                 disabled={!canChangePermissions}
-                onNewPolicySelected={handleNewPolicySelected}
+                onNewPermitteeSelected={handleNewPermitteeSelected}
               />
-            </span>
-          </td>
-          <td>
-            <Button
-              variant='primary'
-              disabled={
-                !canChangePermissions ||
-                !newPermittee ||
-                newPolicies.length === 0
-              }
-              onClick={handlePermissionAddClicked}
-            >
-              Add
-            </Button>
-          </td>
-        </tr>
-      </tbody>
-    </Table>
+            </td>
+            <td>
+              {newPolicies.map((policy) => {
+                return (
+                  <PolicyCard
+                    key={policy.id}
+                    policy={policy}
+                    onDeleteClicked={handleNewPolicyRemoveClicked}
+                  />
+                )
+              })}
+              <span>
+                <PolicySelect
+                  resourceId={resourceId}
+                  permissionId=''
+                  onError={onError}
+                  disabled={!canChangePermissions}
+                  onNewPolicySelected={handleNewPolicySelected}
+                />
+              </span>
+            </td>
+            <td>
+              <Button
+                variant='primary'
+                disabled={
+                  !canChangePermissions ||
+                  !newPermittee ||
+                  newPolicies.length === 0
+                }
+                onClick={handlePermissionAddClicked}
+              >
+                Add
+              </Button>
+            </td>
+          </tr>
+        </tbody>
+      </Table>
+    </React.Fragment>
   )
 }
 
@@ -351,7 +371,9 @@ function PolicyCard(props) {
   return (
     <Toast className='d-inline-block'>
       <Toast.Body>
-        <button className={styles.collapsible} onClick={handleCollapseToggled}>{policy.name}</button>
+        <button className={styles.collapsible} onClick={handleCollapseToggled}>
+          {policy.name}
+        </button>
         <div className={styles.content}>
           <Container>
             <Row>
@@ -493,7 +515,10 @@ const PermitteeSelect = (props) => {
                 </tr>
                 <tr>
                   <th colSpan='2'>
-                    <Form.Control onChange={handleFilterChange} placeholder='filter'/>
+                    <Form.Control
+                      onChange={handleFilterChange}
+                      placeholder='filter'
+                    />
                   </th>
                 </tr>
               </thead>
@@ -634,7 +659,10 @@ const PolicySelect = (props) => {
                 </tr>
                 <tr>
                   <th colSpan='2'>
-                    <Form.Control onChange={handleFilterChange} placeholder='filter'/>
+                    <Form.Control
+                      onChange={handleFilterChange}
+                      placeholder='filter'
+                    />
                   </th>
                 </tr>
               </thead>

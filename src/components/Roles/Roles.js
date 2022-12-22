@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useRef, useState} from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import useFetch from '../../hooks'
 import {
   ListGroup,
@@ -15,6 +15,7 @@ import {
 import { Loader } from '../../uikit'
 import { CerberusContext } from '../CerberusContext'
 import Paginator from '../Paginator'
+import Confirmation from '../Confirmation'
 
 export default function Roles(props) {
   const cerberusCtx = useContext(CerberusContext)
@@ -32,7 +33,11 @@ export default function Roles(props) {
   const { RoleSelectedComponent, NoRoleSelectedComponent, onError } = props
 
   useEffect(() => {
-    get(`roles?sort=displayName&order=asc&skip=${curPage * 10}&limit=10&filter=${filter}`)
+    get(
+      `roles?sort=displayName&order=asc&skip=${
+        curPage * 10
+      }&limit=10&filter=${filter}`
+    )
       .then((r) => {
         if (r && r.page) {
           setRoles(r.page)
@@ -178,6 +183,7 @@ function Details(props) {
     cerberusCtx.suffix
   )
   const [name, setName] = useState('')
+  const [deleting, setDeleting] = useState(false)
   const { role, setRoles, setSelectedRole, onError } = props
 
   useEffect(() => {
@@ -211,6 +217,14 @@ function Details(props) {
   }
 
   function handleRemoveClicked() {
+    setDeleting(true)
+  }
+
+  function handleDenyDelete() {
+    setDeleting(false)
+  }
+
+  function handleConfirmDelete() {
     del(`roles/${role.id}`)
       .then((d) => {
         if (d) {
@@ -218,6 +232,7 @@ function Details(props) {
           setRoles((prev) => {
             return prev.filter((r) => r.id !== role.id)
           })
+          setDeleting(false)
         }
       })
       .catch((e) => {
@@ -233,23 +248,32 @@ function Details(props) {
   }
 
   return (
-    <Form onSubmit={handleFormSubmit}>
-      <Form.Group className='mb-3'>
-        <Form.Label>Role name</Form.Label>
-        <Form.Control
-          type='text'
-          value={name}
-          placeholder='Enter role name'
-          onChange={handleNameChanged}
-        />
-      </Form.Group>
-      <Button variant='primary' type='submit'>
-        Update
-      </Button>
-      <Button variant='danger' className='ms-1' onClick={handleRemoveClicked}>
-        Remove
-      </Button>
-    </Form>
+    <React.Fragment>
+      <Confirmation
+        onConfirm={handleConfirmDelete}
+        onDeny={handleDenyDelete}
+        show={deleting}
+        header='Delete Role'
+        body='This cannot be undone. Delete?'
+      />
+      <Form onSubmit={handleFormSubmit}>
+        <Form.Group className='mb-3'>
+          <Form.Label>Role name</Form.Label>
+          <Form.Control
+            type='text'
+            value={name}
+            placeholder='Enter role name'
+            onChange={handleNameChanged}
+          />
+        </Form.Group>
+        <Button variant='primary' type='submit'>
+          Update
+        </Button>
+        <Button variant='danger' className='ms-1' onClick={handleRemoveClicked}>
+          Remove
+        </Button>
+      </Form>
+    </React.Fragment>
   )
 }
 
