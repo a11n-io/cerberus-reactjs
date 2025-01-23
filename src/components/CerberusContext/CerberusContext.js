@@ -18,7 +18,7 @@ function CerberusProvider(props) {
 
   useEffect(() => {
     if (socketHost !== '' && apiTokenPair && apiTokenPair.accessToken) {
-      setSocketUrl(socketHost + '/api/token/' + apiTokenPair.accessToken)
+      setSocketUrl(socketHost + '/token/' + apiTokenPair.accessToken)
     }
     const interval = setInterval(() => refreshToken(), 5000 * 60)
     return () => clearInterval(interval)

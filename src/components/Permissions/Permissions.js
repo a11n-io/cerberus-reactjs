@@ -22,7 +22,7 @@ export default function Permissions(props) {
   const { resourceId, changeAction, onError } = props
   const cerberusCtx = useContext(CerberusContext)
   const { get, post, del, loading } = useFetch(
-    cerberusCtx.apiHost + '/api/',
+    cerberusCtx.apiHost + '/',
     cerberusCtx.apiTokenPair,
     cerberusCtx.suffix
   )
@@ -423,7 +423,7 @@ const PermitteeSelect = (props) => {
   const [filter, setFilter] = useState('')
   const cerberusCtx = useContext(CerberusContext)
   const { get } = useFetch(
-    cerberusCtx.apiHost + '/api/',
+    cerberusCtx.apiHost + '/',
     cerberusCtx.apiTokenPair,
     cerberusCtx.suffix
   )
@@ -587,7 +587,7 @@ const PolicySelect = (props) => {
   const [filter, setFilter] = useState('')
   const cerberusCtx = useContext(CerberusContext)
   const { get } = useFetch(
-    cerberusCtx.apiHost + '/api/',
+    cerberusCtx.apiHost + '/',
     cerberusCtx.apiTokenPair,
     cerberusCtx.suffix
   )
