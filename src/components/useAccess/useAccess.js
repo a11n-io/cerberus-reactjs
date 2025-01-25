@@ -12,14 +12,13 @@ const useAccess = (resourceId, action, setGranted) => {
       const msgId = crypto.randomUUID()
       setMessageId(msgId)
 
-      cerberusCtx.sendMessage(
-        JSON.stringify({
+      cerberusCtx.sendMessage({
           messageId: msgId,
           hasAccessRequest: {
             resourceId: resourceId,
             actionName: action
           }
-        })
+        }
       )
     }
   }, [cerberusCtx.sendMessage, cerberusCtx.readyState])

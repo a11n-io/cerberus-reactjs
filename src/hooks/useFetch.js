@@ -27,13 +27,18 @@ const useFetch = (baseUrl, tokenPair = null, suffix = '') => {
         method: 'get',
         headers: hdrs
       })
-        .then((response) => response.json())
+        .then((response) => {
+          if (response.status >= 400) {
+            throw new Error(`get error! status: ${response.status}`)
+          }
+          return response.json()
+        })
         .then((data) => {
           setLoading(false)
-          if (!data || !data.data) {
-            return reject(data)
+          if (!data) {
+            data = []
           }
-          resolve(data.data)
+          resolve(data)
         })
         .catch((error) => {
           setLoading(false)
@@ -59,13 +64,18 @@ const useFetch = (baseUrl, tokenPair = null, suffix = '') => {
         headers: hdrs,
         body: JSON.stringify(body)
       })
-        .then((response) => response.json())
+        .then((response) => {
+          if (response.status >= 400) {
+            throw new Error(`post error! status: ${response.status}`)
+          }
+          return response.json()
+        })
         .then((data) => {
           setLoading(false)
-          if (!data || !data.data) {
-            return reject(data)
+          if (!data) {
+            data = []
           }
-          resolve(data.data)
+          resolve(data)
         })
         .catch((error) => {
           setLoading(false)
@@ -91,13 +101,18 @@ const useFetch = (baseUrl, tokenPair = null, suffix = '') => {
         headers: hdrs,
         body: JSON.stringify(body)
       })
-        .then((response) => response.json())
+        .then((response) => {
+          if (response.status >= 400) {
+            throw new Error(`put error! status: ${response.status}`)
+          }
+          return response.json()
+        })
         .then((data) => {
           setLoading(false)
-          if (!data || !data.data) {
-            return reject(data)
+          if (!data) {
+            data = []
           }
-          resolve(data.data)
+          resolve(data)
         })
         .catch((error) => {
           setLoading(false)
@@ -122,13 +137,18 @@ const useFetch = (baseUrl, tokenPair = null, suffix = '') => {
         method: 'delete',
         headers: hdrs
       })
-        .then((response) => response.json())
+        .then((response) => {
+          if (response.status >= 400) {
+            throw new Error(`del error! status: ${response.status}`)
+          }
+          return response.json()
+        })
         .then((data) => {
           setLoading(false)
-          if (!data || !data.data) {
-            return reject(data)
+          if (!data) {
+            data = []
           }
-          resolve(data.data)
+          resolve(data)
         })
         .catch((error) => {
           setLoading(false)

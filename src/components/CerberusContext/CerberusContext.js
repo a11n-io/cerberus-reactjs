@@ -18,7 +18,7 @@ function CerberusProvider(props) {
 
   useEffect(() => {
     if (socketHost !== '' && apiTokenPair && apiTokenPair.accessToken) {
-      setSocketUrl(socketHost + '/token/' + apiTokenPair.accessToken)
+      setSocketUrl(socketHost)
     }
     const interval = setInterval(() => refreshToken(), 5000 * 60)
     return () => clearInterval(interval)
@@ -42,12 +42,17 @@ function CerberusProvider(props) {
     shouldReconnect: (closeEvent) => true
   })
 
+  const sendCtxMessage = (msg) => {
+    msg.accessToken = apiTokenPair.accessToken
+    sendMessage(JSON.stringify(msg))
+  }
+
   const value = {
     suffix: suffix,
     apiHost: apiHost,
     apiTokenPair: apiTokenPair,
     setApiTokenPair: setApiTokenPair,
-    sendMessage: sendMessage,
+    sendMessage: sendCtxMessage,
     lastMessage: lastMessage,
     readyState: readyState
   }
