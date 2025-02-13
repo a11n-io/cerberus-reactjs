@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import styles from './Permissions.module.css'
-import useFetch from '../../hooks/useFetch'
+import useFetch from '../hooks/useFetch'
 import Loader from '../../uikit/Loader'
 import {
   Button,
@@ -14,7 +14,7 @@ import {
   Overlay
 } from 'react-bootstrap'
 import { CerberusContext } from '../CerberusContext'
-import useAccess from '../useAccess'
+import useAccess from '../hooks/useAccess'
 import Paginator from '../Paginator'
 import Confirmation from '../Confirmation'
 

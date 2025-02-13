@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useState } from 'react'
 import useWebSocket from 'react-use-websocket'
 import useSessionStorageState from 'use-session-storage-state'
-import useFetch from '../../hooks'
+import useFetch from '../hooks/useFetch'
 
 const CerberusContext = createContext(null)
 
