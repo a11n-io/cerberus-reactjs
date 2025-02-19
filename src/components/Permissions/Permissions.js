@@ -42,8 +42,10 @@ export default function Permissions(props) {
   }, [resourceId])
 
   function getPermissions() {
+    console.log('get permissions for ', resourceId)
     get(`resources/${resourceId}/permissions`)
       .then((r) => {
+        console.log('permissions:', r)
         if (r) {
           setPermissions(r)
           if (r.length > 0) {
@@ -53,6 +55,7 @@ export default function Permissions(props) {
         }
       })
       .catch((e) => {
+        console.log('permissions err:', e)
         if (onError) {
           onError(e)
         }
@@ -71,7 +74,6 @@ export default function Permissions(props) {
         if (onError) {
           onError(e)
         }
-        console.error(e)
       })
   }
 

@@ -13,19 +13,18 @@ const useAccess = (resourceId, action, setGranted) => {
       setMessageId(msgId)
 
       cerberusCtx.sendMessage({
-          messageId: msgId,
-          hasAccessRequest: {
-            resourceId: resourceId,
-            actionName: action
-          }
+        messageId: msgId,
+        hasAccessRequest: {
+          resourceId: resourceId,
+          actionName: action
         }
-      )
+      })
     }
-  }, [cerberusCtx.sendMessage, cerberusCtx.readyState])
+  }, [cerberusCtx.readyState])
 
   useEffect(() => {
-    if (cerberusCtx.lastMessage && cerberusCtx.lastMessage.data) {
-      const msg = JSON.parse(cerberusCtx.lastMessage.data)
+    if (cerberusCtx.lastMessage) {
+      const msg = cerberusCtx.lastMessage
       if (msg && msg.messageId === messageId) {
         setGranted(msg.granted)
       }

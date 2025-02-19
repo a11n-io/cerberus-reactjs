@@ -9,25 +9,27 @@ export default function AccessGuard(props) {
   const cerberusCtx = useContext(CerberusContext)
 
   useEffect(() => {
+    console.log('socket state:', cerberusCtx.readyState)
     if (cerberusCtx.readyState === ReadyState.OPEN) {
       // eslint-disable-next-line no-undef
       const msgId = crypto.randomUUID()
       setMessageId(msgId)
-
-      cerberusCtx.sendMessage({
-          messageId: msgId,
-          hasAccessRequest: {
-            resourceId: resourceId,
-            actionName: action
-          }
+      const req = {
+        messageId: msgId,
+        hasAccessRequest: {
+          resourceId: resourceId,
+          actionName: action
         }
-      )
+      }
+      console.log('hasAccess req', req)
+      cerberusCtx.sendMessage(req)
     }
-  }, [cerberusCtx.sendMessage, cerberusCtx.readyState])
+  }, [cerberusCtx.readyState])
 
   useEffect(() => {
-    if (cerberusCtx.lastMessage && cerberusCtx.lastMessage.data) {
-      const msg = JSON.parse(cerberusCtx.lastMessage.data)
+    console.log('permission for resource', resourceId, 'action', action, 'message id', messageId, cerberusCtx.lastMessage)
+    if (cerberusCtx.lastMessage !== null) {
+      const msg = cerberusCtx.lastMessage
       if (msg && msg.messageId === messageId) {
         setHasAccess(msg.granted)
       }

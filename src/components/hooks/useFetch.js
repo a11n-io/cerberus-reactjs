@@ -28,21 +28,27 @@ const useFetch = (baseUrl, tokenPair = null, suffix = '') => {
         headers: hdrs
       })
         .then((response) => {
-          if (response.status >= 400) {
-            throw new Error(`get error! status: ${response.status}`)
+          setLoading(false)
+          if (response.ok) {
+            return response.json()
           }
-          return response.json()
+          return Promise.reject(response)
         })
         .then((data) => {
-          setLoading(false)
-          if (!data) {
+          if (data === null) {
             data = []
           }
           resolve(data)
         })
-        .catch((error) => {
-          setLoading(false)
-          reject(error)
+        .catch((response) => {
+          console.log(response.status, response.statusText)
+          // 3. get error messages, if any
+          response.json().then((json) => {
+            if (typeof json !== 'string' && json.hasOwn('message')) {
+              reject(json.message)
+            }
+            reject(json)
+          })
         })
     })
   }
@@ -65,21 +71,27 @@ const useFetch = (baseUrl, tokenPair = null, suffix = '') => {
         body: JSON.stringify(body)
       })
         .then((response) => {
-          if (response.status >= 400) {
-            throw new Error(`post error! status: ${response.status}`)
+          setLoading(false)
+          if (response.ok) {
+            return response.json()
           }
-          return response.json()
+          return Promise.reject(response)
         })
         .then((data) => {
-          setLoading(false)
-          if (!data) {
+          if (data === null) {
             data = []
           }
           resolve(data)
         })
-        .catch((error) => {
-          setLoading(false)
-          reject(error)
+        .catch((response) => {
+          console.log(response.status, response.statusText)
+          // 3. get error messages, if any
+          response.json().then((json) => {
+            if (typeof json !== 'string' && json.hasOwn('message')) {
+              reject(json.message)
+            }
+            reject(json)
+          })
         })
     })
   }
@@ -102,21 +114,27 @@ const useFetch = (baseUrl, tokenPair = null, suffix = '') => {
         body: JSON.stringify(body)
       })
         .then((response) => {
-          if (response.status >= 400) {
-            throw new Error(`put error! status: ${response.status}`)
+          setLoading(false)
+          if (response.ok) {
+            return response.json()
           }
-          return response.json()
+          return Promise.reject(response)
         })
         .then((data) => {
-          setLoading(false)
-          if (!data) {
+          if (data === null) {
             data = []
           }
           resolve(data)
         })
-        .catch((error) => {
-          setLoading(false)
-          reject(error)
+        .catch((response) => {
+          console.log(response.status, response.statusText)
+          // 3. get error messages, if any
+          response.json().then((json) => {
+            if (typeof json !== 'string' && json.hasOwn('message')) {
+              reject(json.message)
+            }
+            reject(json)
+          })
         })
     })
   }
@@ -138,21 +156,27 @@ const useFetch = (baseUrl, tokenPair = null, suffix = '') => {
         headers: hdrs
       })
         .then((response) => {
-          if (response.status >= 400) {
-            throw new Error(`del error! status: ${response.status}`)
+          setLoading(false)
+          if (response.ok) {
+            return response.json()
           }
-          return response.json()
+          return Promise.reject(response)
         })
         .then((data) => {
-          setLoading(false)
-          if (!data) {
+          if (data === null) {
             data = []
           }
           resolve(data)
         })
-        .catch((error) => {
-          setLoading(false)
-          reject(error)
+        .catch((response) => {
+          console.log(response.status, response.statusText)
+          // 3. get error messages, if any
+          response.json().then((json) => {
+            if (typeof json !== 'string' && json.hasOwn('message')) {
+              reject(json.message)
+            }
+            reject(json)
+          })
         })
     })
   }

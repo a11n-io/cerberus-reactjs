@@ -36,15 +36,20 @@ function CerberusProvider(props) {
     }
   }
 
-  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl, {
-    share: true,
-    connect: socketUrl !== null,
-    shouldReconnect: (closeEvent) => true
-  })
+  const { sendJsonMessage, lastJsonMessage, readyState } = useWebSocket(
+    socketUrl,
+    {
+      share: true,
+      connect: socketUrl !== null,
+      shouldReconnect: (closeEvent) => true
+    }
+  )
 
   const sendCtxMessage = (msg) => {
     msg.accessToken = apiTokenPair.accessToken
-    sendMessage(JSON.stringify(msg))
+    msg.type = 'hasAccessRequest'
+    console.log('sending message', msg)
+    sendJsonMessage(msg)
   }
 
   const value = {
@@ -53,7 +58,7 @@ function CerberusProvider(props) {
     apiTokenPair: apiTokenPair,
     setApiTokenPair: setApiTokenPair,
     sendMessage: sendCtxMessage,
-    lastMessage: lastMessage,
+    lastMessage: lastJsonMessage,
     readyState: readyState
   }
 
