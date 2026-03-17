@@ -25,6 +25,7 @@ const useAccess = (resourceId, action, setGranted) => {
   useEffect(() => {
     if (cerberusCtx.lastMessage) {
       const msg = cerberusCtx.lastMessage
+      console.log('access result for ', messageId, msg)
       if (msg && msg.messageId === messageId) {
         setGranted(msg.granted)
       }
