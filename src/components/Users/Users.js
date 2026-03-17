@@ -192,7 +192,8 @@ function Details(props) {
   function handleFormSubmit(e) {
     e.preventDefault()
     put(`users/${user.id}`, {
-      name: userName
+      userName: userName,
+      displayName: displayName
     })
       .then((r) => {
         if (r) {
