@@ -32,7 +32,7 @@ export default function Permissions(props) {
   const [newPolicies, setNewPolicies] = useState([])
   const [activeInherit, setActiveInherit] = useState(false)
   const [hasParent, setHasParent] = useState(false)
-  const [canChangePermissions, setCanChangePermissions] = useState(true)
+  const [canChangePermissions, setCanChangePermissions] = useState(false)
   const [deletingPermission, setDeletingPermission] = useState('')
 
   useAccess(resourceId, changeAction, setCanChangePermissions)

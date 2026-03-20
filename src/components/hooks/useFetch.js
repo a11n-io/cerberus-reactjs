@@ -44,7 +44,7 @@ const useFetch = (baseUrl, tokenPair = null, suffix = '') => {
           console.log(response.status, response.statusText)
           // 3. get error messages, if any
           response.json().then((json) => {
-            if (typeof json !== 'string' && json.hasOwn('message')) {
+            if (typeof json !== 'string' && Object.hasOwn(json, 'message')) {
               reject(json.message)
             }
             reject(json)
@@ -87,7 +87,7 @@ const useFetch = (baseUrl, tokenPair = null, suffix = '') => {
           console.log(response.status, response.statusText)
           // 3. get error messages, if any
           response.json().then((json) => {
-            if (typeof json !== 'string' && json.hasOwn('message')) {
+            if (typeof json !== 'string' && Object.hasOwn(json, 'message')) {
               reject(json.message)
             }
             reject(json)
@@ -130,7 +130,7 @@ const useFetch = (baseUrl, tokenPair = null, suffix = '') => {
           console.log(response.status, response.statusText)
           // 3. get error messages, if any
           response.json().then((json) => {
-            if (typeof json !== 'string' && json.hasOwn('message')) {
+            if (typeof json !== 'string' && Object.hasOwn(json, 'message')) {
               reject(json.message)
             }
             reject(json)
@@ -172,7 +172,7 @@ const useFetch = (baseUrl, tokenPair = null, suffix = '') => {
           console.log(response.status, response.statusText)
           // 3. get error messages, if any
           response.json().then((json) => {
-            if (typeof json !== 'string' && json.hasOwn('message')) {
+            if (typeof json !== 'string' && Object.hasOwn(json, 'message')) {
               reject(json.message)
             }
             reject(json)
